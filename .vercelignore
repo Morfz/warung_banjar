@@ -1,0 +1,13 @@
+.git
+.runtime
+node_modules
+vendor
+.env
+.env.backup
+.env.production
+.phpunit.result.cache
+tests
+phpunit.xml
+Dockerfile
+entrypoint.sh
+/database/database.sqlite
