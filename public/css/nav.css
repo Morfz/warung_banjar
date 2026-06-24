@@ -414,3 +414,22 @@ aside {
     opacity: 0;
     pointer-events: none;
 }
+
+/* Global fix for button span centering */
+.inputs .btn span,
+.inputs .btn:after,
+.reservation .btn span,
+.reservation .btn:after,
+.btn span,
+.btn:after {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    display: block !important;
+    width: auto !important;
+    min-width: max-content !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex-grow: 0 !important;
+}
