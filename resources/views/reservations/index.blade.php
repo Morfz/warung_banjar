@@ -210,7 +210,9 @@
             color: var(--white) !important;
             font-weight: 700 !important;
         }
-        .flatpickr-weekday {
+        .flatpickr-weekday,
+        span.flatpickr-weekday {
+            background: var(--eerie-black-2) !important;
             color: var(--gold-crayola) !important;
             font-weight: 600 !important;
         }
@@ -248,13 +250,15 @@
             background: transparent !important;
             border-color: transparent !important;
         }
-        .flatpickr-input,
-        .flatpickr-input.input-field,
-        .inputs span input.flatpickr-input {
+        
+        /* High specificity to override testi.css */
+        .reservation .inputs span input,
+        .reservation .inputs .flatpickr-input,
+        .reservation .inputs input.flatpickr-input {
             color: var(--white) !important;
             background: var(--eerie-black-2) !important;
             cursor: pointer;
-            padding-left: 50px !important;
+            padding-left: 55px !important;
         }
         .flatpickr-input.input-field::placeholder {
             color: rgba(255, 255, 255, 0.4) !important;
