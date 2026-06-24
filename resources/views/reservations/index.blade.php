@@ -151,8 +151,17 @@
         }
 
         /* Custom Flatpickr Premium Theme Styling */
-        .flatpickr-calendar {
+        .flatpickr-calendar,
+        .flatpickr-months,
+        .flatpickr-month,
+        .flatpickr-innerContainer,
+        .flatpickr-days,
+        .flatpickr-days .dayContainer,
+        .flatpickr-weekdays {
             background: var(--eerie-black-2) !important;
+        }
+
+        .flatpickr-calendar {
             border: 1px solid var(--gold-crayola) !important;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
             color: var(--white) !important;
@@ -171,7 +180,6 @@
             border-top-color: var(--gold-crayola) !important;
         }
         .flatpickr-months {
-            background: var(--eerie-black-2) !important;
             border-bottom: 1px solid var(--white-alpha-10);
             padding: 8px 0 !important;
         }
@@ -244,6 +252,7 @@
             color: var(--white) !important;
             background: var(--eerie-black-2) !important;
             cursor: pointer;
+            padding-left: 35px !important;
         }
         .flatpickr-input.input-field::placeholder {
             color: rgba(255, 255, 255, 0.4) !important;
