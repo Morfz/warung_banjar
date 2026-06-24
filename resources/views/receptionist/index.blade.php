@@ -1067,7 +1067,7 @@
                             <select id="time_only" required class="input-control">
                                 @php
                                     $start = Carbon\Carbon::createFromTimeString('08:00');
-                                    $end = Carbon\Carbon::createFromTimeString('22:00');
+                                    $end = Carbon\Carbon::createFromTimeString('21:00');
                                 @endphp
                                 @while($start->lte($end))
                                     @php $timeStr = $start->format('H:i'); @endphp

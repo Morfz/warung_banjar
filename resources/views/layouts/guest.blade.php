@@ -55,7 +55,7 @@
                         <div class="separator"></div>
                         <div class="topbar__item">
                             <ion-icon name="time-outline"></ion-icon>
-                            <p>Setiap Hari 08.00 am - 10.00pm</p>
+                            <p>Setiap Hari 08:00 - 22:00</p>
                         </div>
                     </div>
                     <div class="topbar-section">

@@ -45,7 +45,7 @@
                             <option value="" disabled selected>Pilih Jam…</option>
                             @php
                                 $start = Carbon\Carbon::createFromTimeString('08:00');
-                                $end = Carbon\Carbon::createFromTimeString('22:00');
+                                $end = Carbon\Carbon::createFromTimeString('21:00');
                             @endphp
                             @while($start->lte($end))
                                 @php $timeStr = $start->format('H:i'); @endphp
@@ -55,7 +55,7 @@
                         </select>
                     </div>
                     <input type="hidden" id="date" name="date" value="{{ old('date') }}" />
-                    <p class="mt-1 text-xs text-slate-400">Reservasi berlaku 7 hari ke depan, pukul 08.00–22.00 (interval 30 menit).</p>
+                    <p class="mt-1 text-xs text-slate-400">Reservasi berlaku 7 hari ke depan, pukul 08:00–21:00 (interval 30 menit).</p>
                     @error('date')<p class="mt-1 text-sm text-rose-600">{{ $message }}</p>@enderror
                 </div>
             </div>
