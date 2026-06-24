@@ -17,6 +17,24 @@ use App\Http\Controllers\ReceptionistController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
+Route::get('/storage/{path}', function (string $path) {
+    $basePath = storage_path('app/public');
+    $baseRealPath = realpath($basePath);
+    $fileRealPath = realpath($basePath.DIRECTORY_SEPARATOR.$path);
+
+    abort_unless(
+        $baseRealPath
+        && $fileRealPath
+        && str_starts_with($fileRealPath, $baseRealPath)
+        && is_file($fileRealPath),
+        404,
+    );
+
+    return response()->file($fileRealPath, [
+        'Cache-Control' => 'public, max-age=31536000',
+    ]);
+})->where('path', '.*')->name('storage.public');
+
 Route::get('/health', function () {
     try {
         DB::connection()->getPdo();
