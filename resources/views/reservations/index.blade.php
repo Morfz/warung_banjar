@@ -103,16 +103,21 @@
             align-items: center !important;
             justify-content: center !important;
             text-align: center !important;
+            box-sizing: border-box !important;
         }
         .table-choice > span {
-            display: block !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
             width: 100% !important;
+            flex: 1 1 auto !important;
             text-align: center !important;
             font-size: 18px !important;
             font-style: italic !important;
             font-weight: 700 !important;
             line-height: 1 !important;
-            margin: 0 auto !important;
+            margin: 0 !important;
+            box-sizing: border-box !important;
         }
         .table-choice > input[type="radio"] {
             position: absolute !important;
@@ -122,12 +127,15 @@
             pointer-events: none !important;
         }
         .table-choice > em {
-            display: block !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
             width: 100% !important;
-            text-align: center !important;
             font-size: 9px !important;
             font-style: normal !important;
-            margin: 0 auto !important;
+            margin: 0 !important;
+            padding-bottom: 4px !important;
+            box-sizing: border-box !important;
         }
     </style>
 
