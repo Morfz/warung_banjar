@@ -36,7 +36,7 @@
                     </div>
                     <div class="flex flex-wrap gap-2">
                         <a href="{{ route('admin.tables.index') }}" class="rounded-md border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Kembali</a>
-                        <button type="submit" class="rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800">Simpan Denah</button>
+                        <button type="submit" class="rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-wait disabled:opacity-70" id="layout-save-button">Simpan Denah</button>
                     </div>
                 </div>
 
@@ -152,7 +152,7 @@
                 min-height: 0 !important;
                 border: 1px solid rgba(228, 197, 144, .35);
                 border-radius: 0.5rem;
-                background: #121111;
+                background: #fff;
                 container-type: size !important;
                 display: flex !important;
                 align-items: center !important;
@@ -162,8 +162,8 @@
             .layout-editor {
                 border: none !important;
                 min-height: 0 !important;
-                width: min(100cqw, 100cqh * 16 / 9) !important;
-                height: min(100cqh, 100cqw * 9 / 16) !important;
+                width: 100% !important;
+                height: 100% !important;
             }
         }
 
@@ -479,6 +479,8 @@
     <script>
         (() => {
             const floor = document.getElementById('layout-floor');
+            const form = document.getElementById('layout-form');
+            const saveButton = document.getElementById('layout-save-button');
             const shapes = ['vertical', 'horizontal'];
             let dragged = null;
             let dragOffsetX = 0;
@@ -619,6 +621,58 @@
                 moveTable(dragged, event.clientX, event.clientY);
                 dragged = null;
             });
+
+            form?.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                if (! saveButton) return form.submit();
+
+                const originalText = saveButton.textContent;
+                saveButton.disabled = true;
+                saveButton.textContent = 'Menyimpan...';
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: new FormData(form),
+                        headers: {
+                            Accept: 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                    });
+
+                    if (! response.ok) {
+                        throw new Error('Gagal menyimpan denah.');
+                    }
+
+                    const data = await response.json();
+                    showLayoutNotice(data.message || 'Denah meja berhasil disimpan.', 'success');
+                } catch (error) {
+                    showLayoutNotice(error.message || 'Gagal menyimpan denah.', 'error');
+                } finally {
+                    saveButton.disabled = false;
+                    saveButton.textContent = originalText;
+                }
+            });
+
+            const showLayoutNotice = (message, type) => {
+                let notice = document.getElementById('layout-save-notice');
+
+                if (! notice) {
+                    notice = document.createElement('div');
+                    notice.id = 'layout-save-notice';
+                    notice.className = 'mb-4 rounded-md border px-4 py-3 text-sm';
+                    form.prepend(notice);
+                }
+
+                notice.textContent = message;
+                notice.classList.toggle('border-emerald-200', type === 'success');
+                notice.classList.toggle('bg-emerald-50', type === 'success');
+                notice.classList.toggle('text-emerald-800', type === 'success');
+                notice.classList.toggle('border-rose-200', type !== 'success');
+                notice.classList.toggle('bg-rose-50', type !== 'success');
+                notice.classList.toggle('text-rose-800', type !== 'success');
+            };
         })();
     </script>
 </x-admin-layout>

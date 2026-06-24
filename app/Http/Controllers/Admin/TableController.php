@@ -51,6 +51,12 @@ class TableController extends Controller
             ]);
         }
 
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Denah meja berhasil disimpan.',
+            ]);
+        }
+
         return back()->with('success', 'Denah meja berhasil disimpan.');
     }
 
