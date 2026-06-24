@@ -15,7 +15,7 @@
 
             <div>
                 <label class="block text-sm font-semibold text-slate-800">Gambar Saat Ini</label>
-                <img src="{{ Storage::url($menu->image) }}" alt="{{ $menu->name }}" class="mt-1.5 h-28 w-28 rounded-md border border-slate-200 object-cover">
+                <img src="{{ $menu->image_url }}" alt="{{ $menu->name }}" class="mt-1.5 h-28 w-28 rounded-md border border-slate-200 object-cover">
                 <label for="image" class="mt-4 block text-sm font-semibold text-slate-800">Ganti Gambar <span class="font-normal text-slate-400">(opsional)</span></label>
                 <input type="file" id="image" name="image" accept="image/*"
                     class="mt-1.5 block w-full text-sm text-slate-600 file:mr-3 file:rounded-md file:border-0 file:bg-slate-950 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-slate-800 @error('image') border-rose-400 @enderror" />

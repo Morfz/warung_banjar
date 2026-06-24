@@ -27,7 +27,7 @@
                         <tr class="hover:bg-slate-50">
                             <td class="px-5 py-4">
                                 <div class="flex items-center gap-3">
-                                    <img src="{{ Storage::url($category->image) }}" alt="{{ $category->name }}" class="h-14 w-14 rounded-md object-cover">
+                                    <img src="{{ $category->image_url }}" alt="{{ $category->name }}" class="h-14 w-14 rounded-md object-cover">
                                     <div>
                                         <p class="font-semibold text-slate-950">{{ $category->name }}</p>
                                         <p class="text-xs text-slate-500">Diperbarui {{ $category->updated_at?->format('d M Y') }}</p>

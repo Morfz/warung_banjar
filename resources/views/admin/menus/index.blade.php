@@ -28,7 +28,7 @@
                         <tr class="hover:bg-slate-50">
                             <td class="px-5 py-4">
                                 <div class="flex items-center gap-3">
-                                    <img src="{{ Storage::url($menu->image) }}" alt="{{ $menu->name }}" class="h-16 w-16 rounded-md object-cover">
+                                    <img src="{{ $menu->image_url }}" alt="{{ $menu->name }}" class="h-16 w-16 rounded-md object-cover">
                                     <div>
                                         <p class="font-semibold text-slate-950">{{ $menu->name }}</p>
                                         <p class="max-w-xl text-sm text-slate-500">{{ Str::limit($menu->description, 100) }}</p>

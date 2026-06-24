@@ -16,7 +16,7 @@
             @foreach ($categories as $category)
                 <div class="service">
                     <picture>
-                        <img src="{{ Storage::url($category->image) }}">
+                        <img src="{{ $category->image_url }}" alt="{{ $category->name }}">
                     </picture>
                     <h2>{{ $category->name }}</h2>
                     <button onclick="window.location.href='{{ route('menus.index') }}'">Lihat Menu</button>
@@ -59,7 +59,7 @@
     <section class="special-dish">
         @if ($randomMenu)
             <div class="special__image">
-                <img src="{{ Storage::url($randomMenu->image) }}" alt="Hidangan spesial {{ $randomMenu->name }}">
+                <img src="{{ $randomMenu->image_url }}" alt="Hidangan spesial {{ $randomMenu->name }}">
             </div>
             <div class="special__info">
                 <img src="/img/badge-1.png" alt="Badge">
@@ -89,7 +89,7 @@
             @if ($specials && $specials->menus->count() > 0)
                 @foreach ($specials->menus as $menu)
                     <div class="menu-item">
-                        <img src="{{ Storage::url($menu->image) }}" alt="{{ $menu->name }}">
+                        <img src="{{ $menu->image_url }}" alt="{{ $menu->name }}">
                         <div class="menu__info">
                             <div class="menu__info-top">
                                 <h2>{{ $menu->name }}</h2>
