@@ -137,6 +137,18 @@
             padding-bottom: 4px !important;
             box-sizing: border-box !important;
         }
+        /* Fix .inputs span overriding .btn span */
+        .inputs .btn span,
+        .inputs .btn:after {
+            position: absolute !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            display: block !important;
+            width: auto !important;
+            min-width: max-content !important;
+            flex-grow: 0 !important;
+        }
     </style>
 
     <script>
