@@ -47,6 +47,8 @@ Route::middleware('auth')->group(function () {
 
     // Receptionist routes
     Route::get('/receptionist', [ReceptionistController::class, 'index'])->name('receptionist.index');
+    Route::get('/receptionist/check-availability', [ReceptionistController::class, 'checkAvailability'])->name('receptionist.check-availability');
+    Route::post('/receptionist/store-walkin', [ReceptionistController::class, 'storeWalkin'])->name('receptionist.store-walkin');
     Route::post('/receptionist/{reservation}/check-in', [ReceptionistController::class, 'checkIn'])->name('receptionist.check-in');
     Route::post('/receptionist/{reservation}/confirm', [ReceptionistController::class, 'confirm'])->name('receptionist.confirm');
     Route::post('/receptionist/{reservation}/cancel', [ReceptionistController::class, 'cancel'])->name('receptionist.cancel');
