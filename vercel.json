@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "buildCommand": "php artisan migrate --force && php artisan db:seed --force && npm ci && npm run build",
   "builds": [
     {
       "src": "api/index.php",
@@ -33,6 +34,8 @@
     }
   ],
   "env": {
+    "APP_NAME": "Warung Banjar",
+    "APP_URL": "https://warung-banjar.vercel.app",
     "APP_ENV": "production",
     "APP_DEBUG": "false",
     "LOG_CHANNEL": "stderr",
