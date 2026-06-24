@@ -13,6 +13,7 @@ use App\Http\Controllers\Frontend\WelcomeController;
 use App\Http\Controllers\Frontend\AboutController as FrontendAboutController;
 use App\Http\Controllers\Frontend\ContactController as FrontendContactController;
 use App\Http\Controllers\Frontend\BlogController as FrontendBlogController;
+use App\Http\Controllers\ReceptionistController;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 Route::get('/menus', [FrontendMenuController::class, 'index'])->name('menus.index');
@@ -43,6 +44,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Receptionist routes
+    Route::get('/receptionist', [ReceptionistController::class, 'index'])->name('receptionist.index');
+    Route::post('/receptionist/{reservation}/check-in', [ReceptionistController::class, 'checkIn'])->name('receptionist.check-in');
+    Route::post('/receptionist/{reservation}/confirm', [ReceptionistController::class, 'confirm'])->name('receptionist.confirm');
+    Route::post('/receptionist/{reservation}/cancel', [ReceptionistController::class, 'cancel'])->name('receptionist.cancel');
 });
 
 require __DIR__.'/auth.php';
