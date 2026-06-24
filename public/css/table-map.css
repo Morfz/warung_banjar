@@ -1,0 +1,376 @@
+/*
+ * TABLE MAP – HALAMAN RESERVASI PUBLIK
+ * Denah interaktif meja untuk pelanggan memilih meja
+ */
+
+/* ── Container utama denah ── */
+.table-map {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* ── Legend (keterangan warna) ── */
+.table-map__legend {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.table-map__legend span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: var(--quick-silver);
+}
+
+.table-map__dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.table-map__dot--available  { background: #4ade80; }
+.table-map__dot--selected   { background: #e4c590; }
+.table-map__dot--disabled   { background: #595754; }
+
+/* ── Area lantai restoran ── */
+.table-map__floor {
+    aspect-ratio: 16 / 9;
+    background-color: #121111;
+    background-image:
+        linear-gradient(rgba(228, 197, 144, .07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(228, 197, 144, .07) 1px, transparent 1px);
+    background-size: 32px 32px;
+    border: 1px solid rgba(228, 197, 144, .3);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.table-map__grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+/* ── Hint teks bawah denah ── */
+.table-map__hint {
+    font-size: 0.75rem;
+    color: var(--quick-silver);
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+/* ══════════════════════════════════════
+   MEJA (table-choice labels)
+══════════════════════════════════════ */
+.table-choice {
+    align-items: center;
+    background: linear-gradient(180deg, #2b2a27, #181716);
+    box-shadow:
+        0 14px 24px rgba(0, 0, 0, .35),
+        inset 0 0 0 1px rgba(228, 197, 144, .3);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    height: 74px;
+    justify-content: center;
+    position: absolute;
+    text-align: center;
+    transform: translate(-50%, -50%);
+    user-select: none;
+    width: 58px;
+    z-index: 2;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Kursi kiri & kanan (::before & ::after) */
+.table-choice::before,
+.table-choice::after {
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, .12), transparent),
+        #3a3833;
+    border-radius: 8px;
+    box-shadow:
+        0 3px 8px rgba(0, 0, 0, .26),
+        inset 0 0 0 1px rgba(228, 197, 144, .18);
+    content: "";
+    height: 26px;
+    position: absolute;
+    top: 12px;
+    width: 16px;
+}
+
+.table-choice::before { left: -22px; }
+.table-choice::after  { right: -22px; }
+
+/* Sembunyikan radio button asli */
+.table-choice input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    height: 0;
+}
+
+/* Nomor meja */
+.table-choice span {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 18px;
+    font-style: italic;
+    font-weight: 700;
+    line-height: 1;
+}
+
+/* Label tidak tersedia pada meja */
+.table-choice em {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 9px;
+    font-style: normal;
+    color: #a6a6a6;
+    line-height: 1.2;
+}
+
+/* ── Hover / dipilih ── */
+.table-choice:hover:not(.table-choice--disabled):not(.table-choice--capacity-disabled) {
+    background: linear-gradient(180deg, #3a3730, #242320);
+    box-shadow:
+        0 16px 28px rgba(0, 0, 0, .4),
+        inset 0 0 0 1px rgba(228, 197, 144, .6);
+}
+
+.table-choice:has(input:checked) {
+    background: linear-gradient(180deg, #e4c590, #caa66d);
+    color: #0e0d0b;
+    box-shadow:
+        0 8px 20px rgba(228, 197, 144, .35),
+        inset 0 0 0 2px rgba(228, 197, 144, .8);
+}
+
+.table-choice:has(input:checked) em {
+    color: #4a3a10;
+}
+
+/* ── Tidak tersedia / disabled ── */
+.table-choice--disabled,
+.table-choice--capacity-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: linear-gradient(180deg, #1e1d1b, #141413);
+    box-shadow:
+        0 4px 10px rgba(0, 0, 0, .2),
+        inset 0 0 0 1px rgba(255, 255, 255, .06);
+}
+
+/* ══════════════════════════════════════
+   BENTUK MEJA (horizontal vs vertical)
+══════════════════════════════════════ */
+
+/* Vertikal kapasitas 2 */
+.table-choice--vertical.table-capacity--2 {
+    height: 54px;
+    width: 48px;
+}
+.table-choice--vertical.table-capacity--2::before,
+.table-choice--vertical.table-capacity--2::after {
+    top: 14px;
+}
+
+/* Vertikal kapasitas 4 */
+.table-choice--vertical.table-capacity--4 {
+    height: 68px;
+    width: 50px;
+}
+.table-choice--vertical.table-capacity--4::before,
+.table-choice--vertical.table-capacity--4::after {
+    box-shadow: 0 32px 0 #3a3833;
+    top: 5px;
+}
+
+/* Vertikal kapasitas 6 */
+.table-choice--vertical.table-capacity--6 {
+    height: 112px;
+    width: 64px;
+}
+.table-choice--vertical.table-capacity--6::before,
+.table-choice--vertical.table-capacity--6::after {
+    box-shadow:
+        0 34px 0 #3a3833,
+        0 68px 0 #3a3833;
+}
+
+/* Vertikal kapasitas 8 */
+.table-choice--vertical.table-capacity--8 {
+    height: 138px;
+    width: 64px;
+}
+.table-choice--vertical.table-capacity--8::before,
+.table-choice--vertical.table-capacity--8::after {
+    box-shadow:
+        0 32px 0 #3a3833,
+        0 64px 0 #3a3833,
+        0 96px 0 #3a3833;
+}
+
+/* Horizontal kapasitas 2 */
+.table-choice--horizontal.table-capacity--2 {
+    height: 48px;
+    width: 54px;
+}
+.table-choice--horizontal.table-capacity--2::before {
+    box-shadow: 0 76px 0 #3a3833;
+    left: 13px;
+    top: -22px;
+}
+.table-choice--horizontal.table-capacity--2::after { display: none; }
+
+/* Horizontal kapasitas 4 */
+.table-choice--horizontal.table-capacity--4 {
+    height: 50px;
+    width: 68px;
+}
+.table-choice--horizontal.table-capacity--4::before {
+    box-shadow:
+        32px 0 0 #3a3833,
+        0 78px 0 #3a3833,
+        32px 78px 0 #3a3833;
+    left: 4px;
+}
+.table-choice--horizontal.table-capacity--4::after { display: none; }
+
+/* Horizontal kapasitas 6 */
+.table-choice--horizontal.table-capacity--6 {
+    height: 58px;
+    width: 132px;
+}
+.table-choice--horizontal.table-capacity--6::before,
+.table-choice--horizontal.table-capacity--6::after {
+    height: 16px;
+    top: -22px;
+    width: 28px;
+}
+.table-choice--horizontal.table-capacity--6::before {
+    box-shadow:
+        43px 0 0 #3a3833,
+        86px 0 0 #3a3833,
+        0 96px 0 #3a3833,
+        43px 96px 0 #3a3833,
+        86px 96px 0 #3a3833;
+    left: 10px;
+}
+.table-choice--horizontal.table-capacity--6::after { display: none; }
+
+/* Horizontal kapasitas 8 */
+.table-choice--horizontal.table-capacity--8 {
+    height: 64px;
+    width: 164px;
+}
+.table-choice--horizontal.table-capacity--8::before {
+    height: 16px;
+    top: -22px;
+    width: 28px;
+    box-shadow:
+        40px 0 0 #3a3833,
+        80px 0 0 #3a3833,
+        120px 0 0 #3a3833,
+        0 102px 0 #3a3833,
+        40px 102px 0 #3a3833,
+        80px 102px 0 #3a3833,
+        120px 102px 0 #3a3833;
+    left: 10px;
+}
+.table-choice--horizontal.table-capacity--8::after { display: none; }
+
+/* ══════════════════════════════════════
+   DEKORASI – RESEPSIONIS & PINTU MASUK
+══════════════════════════════════════ */
+.table-map__decor {
+    position: absolute;
+    pointer-events: none;
+}
+
+.table-map__decor--counter-group {
+    position: absolute;
+    left: 14%;
+    top: 80%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 186px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.table-map__decor--counter {
+    align-items: center;
+    background: #2b2a27;
+    border-radius: 10px 10px 38px 10px;
+    color: #e4c590;
+    display: flex;
+    font-size: 11px;
+    font-weight: 800;
+    height: 130px;
+    justify-content: center;
+    text-transform: uppercase;
+    width: 86px;
+    box-shadow:
+        0 10px 20px rgba(0, 0, 0, .3),
+        inset 0 0 0 1px rgba(228, 197, 144, .25);
+    pointer-events: none;
+}
+
+.table-map__decor--counter-wall {
+    position: absolute;
+    border: 2px dashed rgba(228, 197, 144, .4);
+    width: 120px;
+    height: 186px;
+    pointer-events: none;
+    border-radius: 8px;
+    top: 0;
+    left: 0;
+}
+
+.table-map__decor--entrance {
+    bottom: 0px;
+    left: 14%;
+    transform: translateX(-50%);
+    background: #2b2a27;
+    border: 1px solid rgba(228, 197, 144, .8);
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    color: #e4c590;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 4px 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    pointer-events: none;
+    z-index: 3;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, .5);
+}
+
+/* ── Empty state ── */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--quick-silver);
+}
+.empty-state h3 {
+    color: var(--white);
+    margin-bottom: 8px;
+}

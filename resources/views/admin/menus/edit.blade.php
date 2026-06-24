@@ -1,78 +1,58 @@
 <x-admin-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+    <x-slot name="header">Edit Menu</x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="flex m-2 p-2">
-                <a href="{{ route('admin.menus.index') }}" class="px-4 py-2 bg-green-500 hover:bg-green-700 rounded-lg text-white">
-                    Menu Index
-                </a>
+    <x-admin-form-card title="Edit Menu" description="Perbarui detail menu." :back="route('admin.menus.index')">
+        <form method="POST" action="{{ route('admin.menus.update', $menu->id) }}" enctype="multipart/form-data" class="max-w-2xl space-y-5">
+            @csrf
+            @method('PUT')
+
+            <div>
+                <label for="name" class="block text-sm font-semibold text-slate-800">Nama Menu</label>
+                <input type="text" id="name" name="name" value="{{ old('name', $menu->name) }}" autofocus
+                    class="mt-1.5 block w-full rounded-md border-slate-300 py-2 px-3 text-sm shadow-sm focus:border-amber-400 focus:ring-amber-400 @error('name') border-rose-400 focus:border-rose-400 focus:ring-rose-400 @enderror" />
+                @error('name')<p class="mt-1 text-sm text-rose-600">{{ $message }}</p>@enderror
             </div>
-            <div class="m-2 p-2 bg-slate-100 rounded">
-                <div class="space-y-8 divide-y divide-gray-200 w-1/2 mt-10">
-                    <form method="POST" action="{{ route('admin.menus.update', $menu->id) }}" enctype="multipart/form-data">
-                      @csrf
-                      @method('PUT')
-                      <div class="sm:col-span-6">
-                        <label for="name" class="block text-sm font-medium text-gray-700"> Name </label>
-                        <div class="mt-1">
-                          <input type="text" id="name" name="name" value="{{ $menu->name }}" class="block w-full appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5 @error('name') border-red-400 @enderror" />
-                        </div>
-                        @error('name')
-                            <div class="text-sm text-red-400">{{ $message }}</div>
-                        @enderror
-                      </div>
-                      <div class="sm:col-span-6 pt-3">
-                        <label for="image" class="block text-sm font-medium text-gray-700"> Image </label>
-                        <div>
-                          <img class="w-32 h-32" src="{{ Storage::url($menu->image) }}">
-                        </div>
-                        <div class="mt-1">
-                          <input type="file" id="image" name="image" class="block w-full appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5 @error('image') border-red-400 @enderror" />
-                        </div>
-                        @error('image')
-                            <div class="text-sm text-red-400">{{ $message }}</div>
-                        @enderror
-                      </div>
-                      <div class="sm:col-span-6">
-                        <label for="price" class="block text-sm font-medium text-gray-700"> Price </label>
-                        <div class="mt-1">
-                          <input type="number" min="0" max="100000" step="500" id="price" name="price" value="{{ $menu->price }}" class="block w-full appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5 @error('price') border-red-400 @enderror" />
-                        </div>
-                        @error('price')
-                            <div class="text-sm text-red-400">{{ $message }}</div>
-                        @enderror
-                      </div>
-                      <div class="sm:col-span-6 pt-3">
-                        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                        <div class="mt-1">
-                          <textarea id="description" rows="3" name="description" class="shadow-sm focus:ring-indigo-500 appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('description') border-red-400 @enderror">{{ $menu->description }}</textarea>
-                        </div>
-                        @error('description')
-                            <div class="text-sm text-red-400">{{ $message }}</div>
-                        @enderror
-                      </div>
-                      <div class="sm:col-span-6 pt-3">
-                        <label for="categories" class="block text-sm font-medium text-gray-700">Categories</label>
-                        <div class="mt-1">
-                          <select id="categories" name="categories[]" multiple="multiple" class="shadow-sm focus:ring-indigo-500 appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
-                            @foreach($categories as $category)
-                              <option value="{{ $category->id }}" @selected($menu->categories->contains($category))>{{ $category->name }}</option>
-                            @endforeach
-                          </select>
-                        </div>
-                      </div>
-                      <div class=" flex justify-end mt-2 p-2">
-                          <button type="submit" class="px-4 py-2 bg-green-500 hover:bg-green-700 rounded-lg text-white">Update</button>
-                      </div>                      
-                    </form>
-                  </div>
-                  
+
+            <div>
+                <label class="block text-sm font-semibold text-slate-800">Gambar Saat Ini</label>
+                <img src="{{ Storage::url($menu->image) }}" alt="{{ $menu->name }}" class="mt-1.5 h-28 w-28 rounded-md border border-slate-200 object-cover">
+                <label for="image" class="mt-4 block text-sm font-semibold text-slate-800">Ganti Gambar <span class="font-normal text-slate-400">(opsional)</span></label>
+                <input type="file" id="image" name="image" accept="image/*"
+                    class="mt-1.5 block w-full text-sm text-slate-600 file:mr-3 file:rounded-md file:border-0 file:bg-slate-950 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-slate-800 @error('image') border-rose-400 @enderror" />
+                @error('image')<p class="mt-1 text-sm text-rose-600">{{ $message }}</p>@enderror
             </div>
-        </div>
-    </div>
-</x-app-layout>
+
+            <div>
+                <label for="price" class="block text-sm font-semibold text-slate-800">Harga (Rp)</label>
+                <input type="number" min="0" step="500" id="price" name="price" value="{{ old('price', $menu->price) }}"
+                    class="mt-1.5 block w-full rounded-md border-slate-300 py-2 px-3 text-sm shadow-sm focus:border-amber-400 focus:ring-amber-400 @error('price') border-rose-400 focus:border-rose-400 focus:ring-rose-400 @enderror" />
+                @error('price')<p class="mt-1 text-sm text-rose-600">{{ $message }}</p>@enderror
+            </div>
+
+            <div>
+                <label for="description" class="block text-sm font-semibold text-slate-800">Deskripsi</label>
+                <textarea id="description" name="description" rows="4"
+                    class="mt-1.5 block w-full rounded-md border-slate-300 py-2 px-3 text-sm shadow-sm focus:border-amber-400 focus:ring-amber-400 @error('description') border-rose-400 focus:border-rose-400 focus:ring-rose-400 @enderror">{{ old('description', $menu->description) }}</textarea>
+                @error('description')<p class="mt-1 text-sm text-rose-600">{{ $message }}</p>@enderror
+            </div>
+
+            <div>
+                <label for="categories" class="block text-sm font-semibold text-slate-800">Kategori <span class="font-normal text-slate-400">(boleh pilih lebih dari satu)</span></label>
+                <select id="categories" name="categories[]" multiple
+                    class="mt-1.5 block w-full rounded-md border-slate-300 py-2 px-3 text-sm shadow-sm focus:border-amber-400 focus:ring-amber-400">
+                    @foreach($categories as $category)
+                        <option value="{{ $category->id }}" @selected(in_array($category->id, old('categories', $menu->categories->pluck('id')->toArray())))>{{ $category->name }}</option>
+                    @endforeach
+                </select>
+                @error('categories')<p class="mt-1 text-sm text-rose-600">{{ $message }}</p>@enderror
+            </div>
+
+            <div class="flex justify-end border-t border-slate-100 pt-5">
+                <button type="submit" class="inline-flex items-center gap-1.5 rounded-md bg-slate-950 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800">
+                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+                    Perbarui Menu
+                </button>
+            </div>
+        </form>
+    </x-admin-form-card>
+</x-admin-layout>

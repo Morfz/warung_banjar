@@ -1,60 +1,41 @@
 <x-admin-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+    <x-slot name="header">Tambah Meja</x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="flex m-2 p-2">
-                <a href="{{ route('admin.tables.index') }}" class="px-4 py-2 bg-green-500 hover:bg-green-700 rounded-lg text-white">
-                    Table Index
-                </a>
+    <x-admin-form-card title="Meja Baru" description="Tambahkan meja baru ke daftar." :back="route('admin.tables.index')">
+        <form method="POST" action="{{ route('admin.tables.store') }}" class="max-w-2xl space-y-5">
+            @csrf
+
+            <div>
+                <label for="name" class="block text-sm font-semibold text-slate-800">Nama Meja</label>
+                <input type="text" id="name" name="name" value="{{ old('name') }}" autofocus
+                    class="mt-1.5 block w-full rounded-md border-slate-300 py-2 px-3 text-sm shadow-sm focus:border-amber-400 focus:ring-amber-400 @error('name') border-rose-400 focus:border-rose-400 focus:ring-rose-400 @enderror" />
+                @error('name')<p class="mt-1 text-sm text-rose-600">{{ $message }}</p>@enderror
             </div>
-            <div class="m-2 p-2 bg-slate-100 rounded">
-                <div class="space-y-8 divide-y divide-gray-200 w-1/2 mt-10">
-                    <form method="POST" action="{{ route('admin.tables.store') }}" enctype="multipart/form-data">
-                      @csrf
-                      <div class="sm:col-span-6">
-                        <label for="name" class="block text-sm font-medium text-gray-700"> Name </label>
-                        <div class="mt-1">
-                          <input type="text" id="name" name="name" class="block w-full appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5 @error('name') border-red-400 @enderror" />
-                        </div>
-                        @error('name')
-                            <div class="text-sm text-red-400">{{ $message }}</div>
-                        @enderror
-                      </div>
-                      <div class="sm:col-span-6 pt-3">
-                        <label for="capacity" class="block text-sm font-medium text-gray-700"> Capacity </label>
-                        <div class="mt-1">
-                          <input type="number" min="0" max="8" id="capacity" name="capacity" class="block w-full appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5 @error('capacity') border-red-400 @enderror" />
-                        </div>
-                        @error('capacity')
-                            <div class="text-sm text-red-400">{{ $message }}</div>
-                        @enderror
-                      </div>
-                      <div class="sm:col-span-6 pt-3">
-                        <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                        <div class="mt-1">
-                          <select id="status" name="status" class="shadow-sm focus:ring-indigo-500 appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('status') border-red-400 @enderror">
-                            @foreach(App\Enums\TableStatus::cases() as $status)
-                              <option value="{{ $status->value }}">{{ $status->name }}</option>
-                            @endforeach
-                          </select>
-                        </div>
-                        @error('status')
-                            <div class="text-sm text-red-400">{{ $message }}</div>
-                        @enderror
-                      </div>
-                      </div>
-                      <div class=" flex justify-end mt-2 p-2">
-                          <button type="submit" class="px-4 py-2 bg-green-500 hover:bg-green-700 rounded-lg text-white">Save</button>
-                      </div>                      
-                    </form>
-                  </div>
-                  
+
+            <div>
+                <label for="capacity" class="block text-sm font-semibold text-slate-800">Kapasitas (tamu)</label>
+                <input type="number" min="1" max="20" id="capacity" name="capacity" value="{{ old('capacity') }}"
+                    class="mt-1.5 block w-full rounded-md border-slate-300 py-2 px-3 text-sm shadow-sm focus:border-amber-400 focus:ring-amber-400 @error('capacity') border-rose-400 focus:border-rose-400 focus:ring-rose-400 @enderror" />
+                @error('capacity')<p class="mt-1 text-sm text-rose-600">{{ $message }}</p>@enderror
             </div>
-        </div>
-    </div>
-</x-app-layout>
+
+            <div>
+                <label for="status" class="block text-sm font-semibold text-slate-800">Status</label>
+                <select id="status" name="status"
+                    class="mt-1.5 block w-full rounded-md border-slate-300 py-2 px-3 text-sm shadow-sm focus:border-amber-400 focus:ring-amber-400 @error('status') border-rose-400 focus:border-rose-400 focus:ring-rose-400 @enderror">
+                    @foreach(\App\Enums\TableStatus::cases() as $status)
+                        <option value="{{ $status->value }}" @selected(old('status') === $status->value)>{{ $status->label() }}</option>
+                    @endforeach
+                </select>
+                @error('status')<p class="mt-1 text-sm text-rose-600">{{ $message }}</p>@enderror
+            </div>
+
+            <div class="flex justify-end border-t border-slate-100 pt-5">
+                <button type="submit" class="inline-flex items-center gap-1.5 rounded-md bg-slate-950 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800">
+                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                    Simpan Meja
+                </button>
+            </div>
+        </form>
+    </x-admin-form-card>
+</x-admin-layout>

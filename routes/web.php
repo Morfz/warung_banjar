@@ -19,16 +19,19 @@ Route::get('/menus', [FrontendMenuController::class, 'index'])->name('menus.inde
 Route::get('/about', [FrontendAboutController::class, 'index'])->name('about.index');
 Route::get('/contact', [FrontendContactController::class, 'index'])->name('contact.index');
 Route::get('/blog', [FrontendBlogController::class, 'index'])->name('blog.index');
+Route::get('/reservation/check', [FrontendReservationController::class, 'check'])->name('reservations.check');
+Route::post('/reservation/check', [FrontendReservationController::class, 'lookup'])->name('reservations.lookup');
 Route::get('/reservation', [FrontendReservationController::class, 'index'])->name('reservations.index');
 Route::post('/reservation', [FrontendReservationController::class, 'store'])->name('reservations.store');
-Route::get('/reservation/step-two', [FrontendReservationController::class, 'stepTwo'])->name('reservations.step.two');
-Route::post('/reservation/step-two', [FrontendReservationController::class, 'storeStepTwo'])->name('reservations.store.step.two');
 
 Route::middleware(['auth', 'admin'])->name('admin.')->prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('index');
     Route::resource('categories', CategoryController::class);
     Route::resource('menus', MenuController::class);
+    Route::get('/tables/layout', [TableController::class, 'layout'])->name('tables.layout');
+    Route::put('/tables/layout', [TableController::class, 'updateLayout'])->name('tables.layout.update');
     Route::resource('tables', TableController::class);
+    Route::patch('/reservations/{reservation}/status', [ReservationController::class, 'updateStatus'])->name('reservations.status');
     Route::resource('reservations', ReservationController::class);
 });
 

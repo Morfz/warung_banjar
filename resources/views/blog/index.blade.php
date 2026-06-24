@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <div class="back-top" title="Go to top">
+    <div class="back-top" title="Kembali ke atas">
         <ion-icon name="caret-up-outline"></ion-icon>
     </div>
     <section class="updates padding-2" id="blog">

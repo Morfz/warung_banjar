@@ -26,13 +26,22 @@ class TimeBetween implements Rule
      */
     public function passes($attribute, $value)
     {
-        $pickUpDate = Carbon::parse($value);
+        try {
+            $pickUpDate = Carbon::parse($value);
+        } catch (\Exception $exception) {
+            return false;
+        }
+
+        if ($pickUpDate->minute % 30 !== 0) {
+            return false;
+        }
+
         $pickUpTime = Carbon::createFromTime($pickUpDate->hour, $pickUpDate->minute, $pickUpDate->second);
 
         $openTime = Carbon::createFromTimeString('08:00:00');
         $closeTime = Carbon::createFromTimeString('22:00:00');
 
-        return $pickUpTime->between($openTime, $closeTime) ? true : false;
+        return $pickUpTime->between($openTime, $closeTime);
     }
 
     /**
@@ -42,6 +51,6 @@ class TimeBetween implements Rule
      */
     public function message()
     {
-        return 'Please choose a time between 08:00 and 22:00.';
+        return 'Pilih jam reservasi dengan interval 30 menit (contoh: 10:30, 12:00) antara 08.00 dan 22.00.';
     }
 }

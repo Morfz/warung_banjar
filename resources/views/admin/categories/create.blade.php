@@ -1,55 +1,37 @@
 <x-admin-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+    <x-slot name="header">Tambah Kategori</x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="flex m-2 p-2">
-                <a href="{{ route('admin.categories.index') }}" class="px-4 py-2 bg-green-500 hover:bg-green-700 rounded-lg text-white">
-                    Category Index
-                </a>
+    <x-admin-form-card title="Kategori Baru" description="Lengkapi detail kategori menu di bawah ini." :back="route('admin.categories.index')">
+        <form method="POST" action="{{ route('admin.categories.store') }}" enctype="multipart/form-data" class="max-w-2xl space-y-5">
+            @csrf
+
+            <div>
+                <label for="name" class="block text-sm font-semibold text-slate-800">Nama Kategori</label>
+                <input type="text" id="name" name="name" value="{{ old('name') }}" autofocus
+                    class="mt-1.5 block w-full rounded-md border-slate-300 py-2 px-3 text-sm shadow-sm focus:border-amber-400 focus:ring-amber-400 @error('name') border-rose-400 focus:border-rose-400 focus:ring-rose-400 @enderror" />
+                @error('name')<p class="mt-1 text-sm text-rose-600">{{ $message }}</p>@enderror
             </div>
-            <div class="m-2 p-2 bg-slate-100 rounded">
-                <div class="space-y-8 divide-y divide-gray-200 w-1/2 mt-10">
-                    <form method="POST" action="{{ route('admin.categories.store') }}" enctype="multipart/form-data">
-                      @csrf
-                      <div class="sm:col-span-6">
-                        <label for="name" class="block text-sm font-medium text-gray-700"> Name </label>
-                        <div class="mt-1">
-                          <input type="text" id="name" name="name" class="block w-full appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5 @error('name') border-red-400 @enderror" />
-                        </div>
-                        @error('name')
-                            <div class="text-sm text-red-400">{{ $message }}</div>
-                        @enderror
-                      </div>
-                      <div class="sm:col-span-6 pt-3">
-                        <label for="image" class="block text-sm font-medium text-gray-700"> Image </label>
-                        <div class="mt-1">
-                          <input type="file" id="image" name="image" class="block w-full appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out sm:text-sm sm:leading-5 @error('image') border-red-400 @enderror" />
-                        </div>
-                        @error('image')
-                            <div class="text-sm text-red-400">{{ $message }}</div>
-                        @enderror
-                      </div>
-                      <div class="sm:col-span-6 pt-3">
-                        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                        <div class="mt-1">
-                          <textarea id="description" rows="3" name="description" class="shadow-sm focus:ring-indigo-500 appearance-none bg-white border border-gray-400 rounded-md py-2 px-3 text-base leading-normal transition duration-150 ease-in-out focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md @error('description') border-red-400 @enderror"></textarea>
-                        </div>
-                        @error('description')
-                            <div class="text-sm text-red-400">{{ $message }}</div>
-                        @enderror
-                      </div>
-                      <div class=" flex justify-end mt-2 p-2">
-                          <button type="submit" class="px-4 py-2 bg-green-500 hover:bg-green-700 rounded-lg text-white">Save</button>
-                      </div>                      
-                    </form>
-                  </div>
-                  
+
+            <div>
+                <label for="image" class="block text-sm font-semibold text-slate-800">Gambar</label>
+                <input type="file" id="image" name="image" accept="image/*"
+                    class="mt-1.5 block w-full text-sm text-slate-600 file:mr-3 file:rounded-md file:border-0 file:bg-slate-950 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-slate-800 @error('image') border-rose-400 @enderror" />
+                @error('image')<p class="mt-1 text-sm text-rose-600">{{ $message }}</p>@enderror
             </div>
-        </div>
-    </div>
-</x-app-layout>
+
+            <div>
+                <label for="description" class="block text-sm font-semibold text-slate-800">Deskripsi</label>
+                <textarea id="description" name="description" rows="4"
+                    class="mt-1.5 block w-full rounded-md border-slate-300 py-2 px-3 text-sm shadow-sm focus:border-amber-400 focus:ring-amber-400 @error('description') border-rose-400 focus:border-rose-400 focus:ring-rose-400 @enderror">{{ old('description') }}</textarea>
+                @error('description')<p class="mt-1 text-sm text-rose-600">{{ $message }}</p>@enderror
+            </div>
+
+            <div class="flex justify-end border-t border-slate-100 pt-5">
+                <button type="submit" class="inline-flex items-center gap-1.5 rounded-md bg-slate-950 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800">
+                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                    Simpan Kategori
+                </button>
+            </div>
+        </form>
+    </x-admin-form-card>
+</x-admin-layout>

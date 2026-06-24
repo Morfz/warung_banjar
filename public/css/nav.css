@@ -178,9 +178,20 @@ nav.scrolled {
     position: fixed;
     top: 0;
     left: 0;
+    right: 0;
     margin: 0;
     background: var(--eerie-black-4);
     z-index: 80;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.aside-open {
+    display: none;
 }
 
 .hide {

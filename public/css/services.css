@@ -113,7 +113,7 @@ section.services {
 
 .section-title {
     font: calc(2.25rem + 1vw) 'Forum', cursive;
-    line-height: calc(2.25rem + 1vh) 'Forum', cursive;
+    line-height: 1.1;
     margin-bottom: 20px;
     width: 100%;
 }

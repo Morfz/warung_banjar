@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('category_menu', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignId('category_id')->constrained();
-            $table->foreignId('menu_id')->constrained();
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('menu_id')->constrained()->cascadeOnDelete();
+            $table->unique(['category_id', 'menu_id']);
         });
     }
 

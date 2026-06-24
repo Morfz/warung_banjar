@@ -26,10 +26,16 @@ class DateBetween implements Rule
      */
     public function passes($attribute, $value)
     {
-        $pickUpDate = Carbon::parse($value);
+        try {
+            $pickUpDate = Carbon::parse($value);
+        } catch (\Exception $exception) {
+            return false;
+        }
+
         $lastDate = Carbon::now()->addWeek();
 
-        return $value >= now() && $value <= $lastDate;
+        return $pickUpDate->greaterThanOrEqualTo(Carbon::now())
+            && $pickUpDate->lessThanOrEqualTo($lastDate);
     }
 
     /**
@@ -39,6 +45,6 @@ class DateBetween implements Rule
      */
     public function message()
     {
-        return 'Please choose a date between a week from now.';
+        return 'Pilih tanggal reservasi mulai sekarang sampai tujuh hari ke depan.';
     }
 }

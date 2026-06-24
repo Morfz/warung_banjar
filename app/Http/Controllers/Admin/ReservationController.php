@@ -2,111 +2,144 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\ReservationStatus;
 use App\Enums\TableStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReservationStoreRequest;
-use Illuminate\Http\Request;
 use App\Models\Reservation;
 use App\Models\Table;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ReservationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $reservations = Reservation::all();
+        $reservations = Reservation::with('table')->latest('date')->paginate(10);
+
         return view('admin.reservations.index', compact('reservations'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        $tables = Table::where('status', TableStatus::Available)->get();
-        return view('admin.reservations.create', compact('tables'));
+        $tables = Table::where('status', TableStatus::Available)->orderBy('name')->get();
+        $statuses = ReservationStatus::cases();
+
+        return view('admin.reservations.create', compact('tables', 'statuses'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(ReservationStoreRequest $request)
     {
-        $table = Table::findOrfail($request->table_id);
+        $table = Table::findOrFail($request->table_id);
+
+        if ($table->status !== TableStatus::Available) {
+            return back()->with('warning', 'Meja ini tidak tersedia.')->withInput();
+        }
+
         if ($request->guests > $table->capacity) {
-            return back()->with('warning', 'Guests are more than table capacity');
+            return back()->with('warning', 'Jumlah tamu melebihi kapasitas meja.')->withInput();
         }
-        $request_date = Carbon::parse($request->date);
-        foreach ($table->reservation as $res) {
-            $time_start = Carbon::parse($res->date->format('Y-m-d H:i:s'));
-            $time_end = Carbon::parse($res->date->format('Y-m-d H:i:s'))->addHour();
-            if (($request_date->between($time_start, $time_end)) || ($request_date->eq($time_start) || $request_date->eq($time_end))) {
-                return back()->with('warning', 'This table is reserved for this date.');
-            }
+
+        $requestDate = Carbon::parse($request->date);
+
+        if ($this->reservedTableIds($requestDate, $request->guests)->contains($table->id)) {
+            return back()->with('warning', 'Meja ini sudah dipesan pada jam tersebut.')->withInput();
         }
-        
+
         Reservation::create($request->validated());
 
-        return to_route('admin.reservations.index')->with('success', 'Reservation created successfully');
+        return to_route('admin.reservations.index')->with('success', 'Reservasi berhasil dibuat.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(Reservation $reservation)
     {
-        //
+        return redirect()->route('admin.reservations.edit', $reservation);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Reservation $reservation)
     {
-        $tables = Table::where('status', TableStatus::Available)->get();
-        return view('admin.reservations.edit', compact('reservation', 'tables'));
+        $tables = Table::where('status', TableStatus::Available)
+            ->orWhere('id', $reservation->table_id)
+            ->orderBy('name')
+            ->get();
+
+        $statuses = ReservationStatus::cases();
+
+        return view('admin.reservations.edit', compact('reservation', 'tables', 'statuses'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(ReservationStoreRequest $request, Reservation $reservation)
     {
         $table = Table::findOrFail($request->table_id);
 
         if ($request->guests > $table->capacity) {
-            return back()->with('warning', 'Guests are more than table capacity');
+            return back()->with('warning', 'Jumlah tamu melebihi kapasitas meja.')->withInput();
         }
 
-        $request_date = Carbon::parse($request->date);
+        $requestDate = Carbon::parse($request->date);
 
-        foreach ($table->reservation as $res) {
-            if ($res->id !== $reservation->id) {
-                $time_start = Carbon::parse($res->date->format('Y-m-d H:i:s'));
-                $time_end = Carbon::parse($res->date->format('Y-m-d H:i:s'))->addHour();
-
-                if ($request_date->between($time_start, $time_end) || $request_date->eq($time_start) || $request_date->eq($time_end)) {
-                    return back()->with('warning', 'This table is reserved for this date.');
-                }
-            }
+        if ($this->reservedTableIds($requestDate, $request->guests, $reservation->id)->contains($table->id)) {
+            return back()->with('warning', 'Meja ini sudah dipesan pada jam tersebut.')->withInput();
         }
 
         $reservation->update($request->validated());
 
-        return redirect()->route('admin.reservations.index')->with('success', 'Reservation updated successfully');
+        return redirect()->route('admin.reservations.index')->with('success', 'Reservasi berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    public function updateStatus(Request $request, Reservation $reservation)
+    {
+        $validated = $request->validate([
+            'status' => ['required', Rule::enum(ReservationStatus::class)],
+        ]);
+
+        $reservation->update($validated);
+        $label = ReservationStatus::from($validated['status'])->label();
+
+        return to_route('admin.reservations.index')
+            ->with('success', 'Status reservasi diubah menjadi "' . $label . '".');
+    }
+
     public function destroy(Reservation $reservation)
     {
         $reservation->delete();
 
-        return to_route('admin.reservations.index')->with('success', 'Reservation deleted successfully');
+        return to_route('admin.reservations.index')->with('success', 'Reservasi berhasil dihapus.');
+    }
+
+    private function getDurationByGuests(int $guests): int
+    {
+        if ($guests <= 2) {
+            return 60; // 1 hour
+        }
+        if ($guests <= 4) {
+            return 90; // 1.5 hours
+        }
+        return 120; // 2 hours
+    }
+
+    private function reservedTableIds(Carbon $date, int $guests, ?int $ignoreReservationId = null)
+    {
+        $reservations = Reservation::query()
+            ->whereIn('status', [
+                ReservationStatus::Pending->value,
+                ReservationStatus::Confirmed->value,
+            ])
+            ->when($ignoreReservationId, fn ($query) => $query->whereKeyNot($ignoreReservationId))
+            ->whereDate('date', $date->toDateString())
+            ->get();
+
+        $newStart = $date;
+        $newDuration = $this->getDurationByGuests($guests);
+        $newEnd = $date->copy()->addMinutes($newDuration);
+
+        return $reservations->filter(function ($res) use ($newStart, $newEnd) {
+            $resStart = Carbon::parse($res->date);
+            $resDuration = $this->getDurationByGuests($res->guests);
+            $resEnd = $resStart->copy()->addMinutes($resDuration);
+
+            return $resStart->lt($newEnd) && $newStart->lt($resEnd);
+        })->pluck('table_id');
     }
 }

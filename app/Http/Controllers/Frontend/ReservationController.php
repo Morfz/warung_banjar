@@ -5,84 +5,128 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Table;
+use App\Enums\ReservationStatus;
 use App\Enums\TableStatus;
 use Carbon\Carbon;
 use App\Rules\DateBetween;
 use App\Rules\TimeBetween;
 use App\Models\Reservation;
+use Illuminate\Validation\Rule;
 
 class ReservationController extends Controller
 {
+    public function check()
+    {
+        return view('reservations.check', [
+            'reservations' => collect(),
+            'searched' => false,
+        ]);
+    }
+
+    public function lookup(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => ['required', 'email', 'max:160'],
+            'phone' => ['required', 'string', 'max:30'],
+        ]);
+
+        $reservations = Reservation::with('table')
+            ->where('email', $validated['email'])
+            ->where('phone', $validated['phone'])
+            ->latest('date')
+            ->get();
+
+        return view('reservations.check', [
+            'reservations' => $reservations,
+            'searched' => true,
+            'email' => $validated['email'],
+            'phone' => $validated['phone'],
+        ]);
+    }
+
     public function index(Request $request)
     {
-        $reservation = $request->session()->get('reservation');
-        $min_date = Carbon::today();
-        $max_date = Carbon::today()->addWeek();
-        return view('reservations.index', compact('reservation', 'min_date', 'max_date'));
+        $min_date = Carbon::now()->addMinutes(30);
+        $max_date = Carbon::now()->addWeek();
+        $tables = Table::query()
+            ->get()
+            ->sortBy(fn (Table $table) => (int) preg_replace('/\D+/', '', $table->name))
+            ->values()
+            ->map(function (Table $table) {
+                $table->is_selectable = $table->status === TableStatus::Available;
+                $table->unavailable_reason = $table->is_selectable ? null : 'Tidak tersedia';
+
+                return $table;
+            });
+
+        return view('reservations.index', compact('min_date', 'max_date', 'tables'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => ['required'],
-            'email' => ['required', 'email'],
-            'phone' => ['required'],
+            'name' => ['required', 'string', 'max:120'],
+            'email' => ['required', 'email', 'max:160'],
+            'phone' => ['required', 'string', 'max:30'],
             'date' => ['required', 'date', new DateBetween, new TimeBetween],
-            'guests' => ['required'],
+            'guests' => ['required', 'integer', 'min:1', 'max:20'],
+            'table_id' => ['required', Rule::exists('tables', 'id')],
         ]);
-        
-        if(empty($request->session()->get('reservation'))){
-            $reservation = new Reservation();
-            $reservation->fill($validated);
-            $request->session()->put('reservation', $reservation);
-        } else {
-            $reservation = $request->session()->get('reservation');
-            $reservation->fill($validated);
-            $request->session()->put('reservation', $reservation);
+
+        $date = Carbon::parse($validated['date']);
+
+        $table = Table::where('status', TableStatus::Available)
+            ->where('capacity', '>=', $validated['guests'])
+            ->find($validated['table_id']);
+
+        if (! $table) {
+            return back()
+                ->withInput()
+                ->with('warning', 'Meja yang dipilih tidak tersedia atau kapasitasnya kurang untuk jumlah tamu.');
         }
 
-        return to_route('reservations.step.two');
+        if ($this->reservedTableIds($date, $validated['guests'])->contains($table->id)) {
+            return back()
+                ->withInput()
+                ->with('warning', 'Meja ini sudah dipesan pada jam tersebut. Silakan pilih meja atau waktu lain.');
+        }
+
+        Reservation::create($validated);
+
+        return to_route('reservations.check')
+            ->with('success', 'Reservasi berhasil dibuat dan sedang menunggu konfirmasi admin. Masukkan email dan nomor telepon untuk melihat detail reservasi Anda.');
     }
 
-    public function stepTwo(Request $request)
+    private function getDurationByGuests(int $guests): int
     {
-        $reservation = $request->session()->get('reservation');
-        // $res_table_ids = Reservation::orderBy('date')
-        // ->get()
-        // ->filter(function($value) use ($reservation) {
-        //     return $value->date->format('Y-m-d') == $reservation->date->format('Y-m-d') && 
-        //         $value->date->format('H:i:s') <= $reservation->date->addHour()->format('H:i:s');
-        // })
-        // ->pluck('table_id');
-        $res_table_ids = Reservation::orderBy('date')
-        ->get()
-        ->filter(function($value) use ($reservation) {
-            $oneHourAfter = $reservation->date->copy()->addHour();
-    
-            return $value->date->format('Y-m-d') == $reservation->date->format('Y-m-d') &&
-                ($value->date->greaterThanOrEqualTo($reservation->date) &&
-                $value->date->lessThan($oneHourAfter) ||
-                $reservation->date->greaterThan($value->date) &&
-                $reservation->date->lessThanOrEqualTo($value->date->copy()->addHour()));
-        })
-        ->pluck('table_id');
-    
-        $tables = Table::where('status', TableStatus::Available)
-                ->where('capacity', '>=', $reservation->guests)
-                ->whereNotIn('id', $res_table_ids)->get();
-        return view('reservations.step-two', compact('reservation', 'tables'));
+        if ($guests <= 2) {
+            return 60; // 1 hour
+        }
+        if ($guests <= 4) {
+            return 90; // 1.5 hours
+        }
+        return 120; // 2 hours
     }
 
-    public function storeStepTwo(Request $request)
+    private function reservedTableIds(Carbon $date, int $guests)
     {
-        $validated = $request->validate([
-            'table_id' => ['required'],
-        ]);
-        $reservation = $request->session()->get('reservation');
-        $reservation->fill($validated);
-        $reservation->save();
-        $request->session()->forget('reservation');
+        $reservations = Reservation::whereIn('status', [
+                ReservationStatus::Pending->value,
+                ReservationStatus::Confirmed->value,
+            ])
+            ->whereDate('date', $date->toDateString())
+            ->get();
 
-        return to_route('welcome')->with('success', 'Telah Berhasil Membuat Reservasi');
+        $newStart = $date;
+        $newDuration = $this->getDurationByGuests($guests);
+        $newEnd = $date->copy()->addMinutes($newDuration);
+
+        return $reservations->filter(function ($res) use ($newStart, $newEnd) {
+            $resStart = Carbon::parse($res->date);
+            $resDuration = $this->getDurationByGuests($res->guests);
+            $resEnd = $resStart->copy()->addMinutes($resDuration);
+
+            return $resStart->lt($newEnd) && $newStart->lt($resEnd);
+        })->pluck('table_id');
     }
 }

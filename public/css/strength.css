@@ -8,6 +8,46 @@ section.strength {
     text-align: center;
 }
 
+.about-story {
+    gap: 40px;
+}
+
+.about-story__intro {
+    max-width: 820px;
+}
+
+.about-story__intro .paragraph {
+    color: var(--quick-silver);
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+.about-story__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    width: min(100%, 1120px);
+    text-align: left;
+}
+
+.about-story__grid article {
+    border-top: 1px solid var(--gold-crayola);
+    background: var(--smoky-black-3);
+    padding: 28px;
+}
+
+.about-story__grid h2 {
+    color: var(--white);
+    font: 1.8rem 'Forum', cursive;
+    margin: 0 0 12px;
+}
+
+.about-story__grid p {
+    color: var(--quick-silver);
+    line-height: 1.6;
+    margin: 0;
+}
+
 
 .strength-box {
     margin-top: 30px;
@@ -16,6 +56,12 @@ section.strength {
     gap: 30px;
     padding: 0 5%;
     justify-content: space-around;
+}
+
+@media screen and (max-width: 850px) {
+    .about-story__grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .strength__item {
@@ -71,10 +117,6 @@ section.updates {
     padding-block: 12vh;
     text-align: center;
     color: var(--white);
-}
-
-.updates .subtitle:after {
-    left: -21%;
 }
 
 .updates-box {

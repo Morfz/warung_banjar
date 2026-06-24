@@ -97,12 +97,10 @@ body.loaded {
 }
 
 .padding-2 {
-    width: calc(100% - 4%);
     padding: 0 2%;
 }
 
 .padding-5 {
-    width: calc(100% - 10%);
     padding: 0 5%;
 }
 

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('phone');
             $table->dateTime('date');
             $table->integer('guests');
-            $table->unsignedBigInteger('table_id'); 
+            $table->foreignId('table_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

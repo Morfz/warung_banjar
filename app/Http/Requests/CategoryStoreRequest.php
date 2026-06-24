@@ -22,9 +22,9 @@ class CategoryStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required'],
-            'image' => ['required', 'image'], // 'image' is a validation rule that checks if the file is an image
-            'description' => ['required'],
+            'name' => ['required', 'string', 'max:120'],
+            'image' => ['required', 'image', 'max:2048'],
+            'description' => ['required', 'string', 'max:1000'],
         ];
     }
 }

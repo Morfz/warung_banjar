@@ -1,35 +1,35 @@
 <x-guest-layout>
-    <div class="back-top" title="Go to top">
+    <div class="back-top" title="Kembali ke atas">
         <ion-icon name="caret-up-outline"></ion-icon>
     </div>
     <section class="testi padding-2" id="contact">
-        <h2 class="section-title"><span>”</span>Saya ingin berterima kasih atas undangan makan malam yang luar biasa
-            beberapa waktu lalu. Makanannya luar biasa.</h2>
+        <h2 class="section-title"><span>"</span>Saya ingin berterima kasih atas jamuan yang hangat.
+            Rasa masakannya benar-benar mengingatkan pada rumah.</h2>
         <div class="testi__separator">
             <span></span><span></span><span></span>
         </div>
         <div class="avatar">
-            <img src="./img/testi-avatar.jpg" alt="Avatar image">
+            <img src="/img/testi-avatar.jpg" alt="Foto pelanggan">
             <h3 class="subtitle">Majdi</h3>
         </div>
     </section>
-    <div class="container-reservation padding-2">
+    <div class="container-reservation contact-reservation padding-2">
         <section class="reservation">
             <form>
                 <h2 class="section-title">Tanyakan Apapun</h2>
-                <p class="paragraph">Tanya melalui <a href="tel:+88123123456">+88-123-123456</a> atau isi formulir di bawah ini</p>
+                <p class="paragraph">Tanya melalui <a href="tel:+6281234567890">+62 812 3456 7890</a> atau isi formulir di bawah ini</p>
                 <div class="inputs">
                     <div>
-                        <input class="input-field" type="text" placeholder="Your Name" autocomplete="off" required>
-                        <input class="input-field" type="tel" placeholder="Phone Number" autocomplete="off"
+                        <input class="input-field" type="text" placeholder="Nama Anda" autocomplete="name" required>
+                        <input class="input-field" type="tel" placeholder="Nomor Telepon" autocomplete="tel"
                             inputmode="numeric" required>
                     </div>
                     <div>
-                        <input class="input-field" type="text" placeholder="Subject" autocomplete="off" required>
+                        <input class="input-field" type="text" placeholder="Subjek" autocomplete="off" required>
                     </div>
-                    <textarea class="input-field" cols="30" rows="7" placeholder="Message"></textarea>
+                    <textarea class="input-field" cols="30" rows="7" placeholder="Pesan"></textarea>
                 </div>
-                <button class="btn btn-secondary" data-text="Ask Us">
+                <button class="btn btn-secondary" data-text="Kirim Pesan">
                     <span>Kirim Pesan</span>
                 </button>
             </form>
@@ -37,12 +37,12 @@
             <div class="reservation-right">
                 <h2 class="section-title">Hubungi Kami</h2>
                 <h3 class="highlight">Nomor Telepon</h3>
-                <strong>+62 812 3456 7890</strong>
+                <a class="contact-link" href="tel:+6281234567890">+62 812 3456 7890</a>
                 <div class="separator"></div>
                 <h3 class="highlight">Email</h3>
-                <strong>warungbanjar@gmail.com</strong>
+                <a class="contact-link" href="mailto:warungbanjar@gmail.com">warungbanjar@gmail.com</a>
                 <div class="separator"></div>
-                <h3>Location</h3>
+                <h3>Lokasi</h3>
                 <p>Jl. Unlam, Pangeran, Kec. Banjarmasin Utara, Kota Banjarmasin, Kalimantan Selatan 70123</p>
                 <h3>Waktu</h3>
                 <p>Setiap Hari 08.00 am - 10.00pm</p>

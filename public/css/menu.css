@@ -11,10 +11,6 @@ section.menu {
     overflow: hidden;
 }
 
-.menu .subtitle:after {
-    left: -10%;
-}
-
 .menu-box {
     width: calc(100% - 7vw);
     display: grid;

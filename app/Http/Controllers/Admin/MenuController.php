@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MenuStoreRequest;
-use Illuminate\Http\Request;
+use App\Http\Requests\MenuUpdateRequest;
 use App\Models\Menu;
 use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
@@ -16,9 +16,9 @@ class MenuController extends Controller
      */
     public function index()
     {
-        $menus = Menu::all();
-        $categories = Category::all();
-        return view('admin.menus.index', compact('menus', 'categories'));
+        $menus = Menu::with('categories')->latest()->paginate(10);
+
+        return view('admin.menus.index', compact('menus'));
     }
 
     /**
@@ -26,7 +26,8 @@ class MenuController extends Controller
      */
     public function create()
     {
-        $categories = Category::all();
+        $categories = Category::orderBy('name')->get();
+
         return view('admin.menus.create', compact('categories'));
     }
 
@@ -35,28 +36,21 @@ class MenuController extends Controller
      */
     public function store(MenuStoreRequest $request)
     {
-        $image = $request->file('image')->store('public/menus');
+        $validated = $request->validated();
+        $validated['image'] = $request->file('image')->store('public/menus');
 
-        $menu = Menu::create([
-            'name' => $request->name,
-            'image' => $image,
-            'description' => $request->description,
-            'price' => $request->price,
-        ]);
+        $menu = Menu::create($validated);
+        $menu->categories()->sync($validated['categories'] ?? []);
 
-        if ($request->has('categories')) {
-            $menu->categories()->attach($request->categories);
-        }
-
-        return to_route('admin.menus.index')->with('success', 'Menu created successfully');
+        return to_route('admin.menus.index')->with('success', 'Menu berhasil dibuat.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Menu $menu)
     {
-        //
+        return redirect()->route('admin.menus.edit', $menu);
     }
 
     /**
@@ -64,39 +58,27 @@ class MenuController extends Controller
      */
     public function edit(Menu $menu)
     {
-        $categories = Category::all();
+        $categories = Category::orderBy('name')->get();
+
         return view('admin.menus.edit', compact('menu', 'categories'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Menu $menu)
+    public function update(MenuUpdateRequest $request, Menu $menu)
     {
-        request()->validate([
-            'name' => 'required',
-            'description' => 'required',
-            'price' => 'required',
-        ]);
-        $image = $menu->image;
+        $validated = $request->validated();
 
         if ($request->hasFile('image')) {
             Storage::delete($menu->image);
-            $image = $request->file('image')->store('public/menus');
+            $validated['image'] = $request->file('image')->store('public/menus');
         }
 
-        $menu->update([
-            'name' => $request->name,
-            'image' => $image,
-            'description' => $request->description,
-            'price' => $request->price,
-        ]);
+        $menu->update($validated);
+        $menu->categories()->sync($validated['categories'] ?? []);
 
-        if($request->has('categories')) {
-            $menu->categories()->sync($request->categories);
-        }
-
-        return to_route('admin.menus.index')->with('success', 'Menu updated successfully');
+        return to_route('admin.menus.index')->with('success', 'Menu berhasil diperbarui.');
     }
 
     /**
@@ -108,6 +90,6 @@ class MenuController extends Controller
         $menu->categories()->detach();
         $menu->delete();
 
-        return to_route('admin.menus.index')->with('danger', 'Menu deleted successfully');
+        return to_route('admin.menus.index')->with('success', 'Menu berhasil dihapus.');
     }
 }
