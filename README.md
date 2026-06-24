@@ -27,6 +27,12 @@ Aplikasi sistem informasi restoran berbasis web yang dirancang khusus untuk meng
 - **Manajemen Meja**: Kelola daftarnya dan sesuaikan kapasitas meja.
 - **Visual Table Layout Designer (Desainer Denah Meja)**: Fitur premium di mana admin dapat mengatur posisi X/Y koordinat meja, menentukan bentuk meja (vertikal/horizontal), serta kapasitas kursi secara visual pada grid peta restoran.
 
+### 4. Console Resepsionis (Receptionist Desk)
+- **Pencarian Tamu Terintegrasi**: Resepsionis dapat dengan cepat mencari tamu berdasarkan nama, email, atau telepon.
+- **Penyaringan Real-time**: Menyaring daftar kedatangan berdasarkan tanggal tertentu serta status reservasi (Menunggu, Dikonfirmasi, Selesai, Dibatalkan).
+- **Check-in & Konfirmasi Cepat**: Mengubah status tamu menjadi *Telah Hadir* (Check-in) atau melakukan pembatalan langsung dari konsol resepsionis.
+- **Modal Pemesanan Walk-in Baru**: Pop-up modal interaktif yang memuat form pendaftaran dan denah meja visual untuk langsung menaruh tamu yang datang langsung ke meja yang kosong saat itu juga.
+
 ---
 
 ## 💻 Teknologi yang Digunakan
@@ -38,12 +44,12 @@ Sistem ini dibangun dengan stack teknologi modern berkinerja tinggi:
   - **PHP 8.2+** (Dengan performa eksekusi cepat)
   - **Eloquent ORM** (Manajemen database relasional yang kuat)
 - **Frontend (Client-side)**:
-  - **HTML5 & CSS3** (Custom style layout modern)
+  - **HTML5, CSS3 & Vanilla CSS Custom** (Untuk tampilan konsol resepsionis yang premium, cepat & handal)
   - **TailwindCSS 3.x** (Utility-first CSS framework untuk tampilan admin)
   - **Alpine.js** (Framework JS minimalis untuk interaktivitas komponen)
   - **Vite 8.x** (Frontend tooling & asset bundler super cepat)
 - **Database & Storage**:
-  - **MySQL / MariaDB** (Untuk menyimpan relasi data)
+  - **SQLite / MySQL / MariaDB** (Untuk menyimpan relasi data)
   - **Laravel Local Filesystem Storage** (Untuk penyimpanan file gambar menu dan kategori)
 
 ---
@@ -88,16 +94,11 @@ php artisan key:generate
 ```
 
 #### 5. Konfigurasi Database `.env`
-Buka file `.env` yang baru dibuat menggunakan kode editor (VS Code, Notepad, dll.), lalu sesuaikan pengaturan database Anda:
+Buka file `.env` yang baru dibuat menggunakan kode editor (VS Code, Notepad, dll.), lalu sesuaikan pengaturan database Anda. Anda dapat menggunakan SQLite untuk setup paling cepat tanpa setup server database:
 ```env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=warung_banjar
-DB_USERNAME=root
-DB_PASSWORD=
+DB_CONNECTION=sqlite
 ```
-*Catatan: Pastikan Anda sudah membuat database kosong bernama `warung_banjar` di phpMyAdmin / MySQL client sebelum lanjut.*
+*Catatan: Jika memakai SQLite, buat file kosong bernama `database.sqlite` di dalam folder `database` terlebih dahulu.*
 
 #### 6. Jalankan Migrasi & Database Seeder
 Jalankan migrasi tabel beserta pengisian data dummy awal (seperti daftar admin default, kategori, menu, serta layout posisi meja restoran):
@@ -122,10 +123,13 @@ Aplikasi kini dapat diakses melalui browser Anda di alamat: **`http://127.0.0.1:
 
 ## 🔑 Informasi Akun Akses Default
 
-### Panel Admin
-Untuk masuk ke panel pengelolaan admin, buka **`http://127.0.0.1:8000/login`** atau akses menu login, dan masukkan kredensial berikut:
+Untuk masuk ke halaman manajemen, silakan login di alamat **`http://127.0.0.1:8000/login`** menggunakan akun berikut:
 - **Email:** `admin@gmail.com`
 - **Password:** `password`
+
+Setelah berhasil login, Anda dapat mengakses halaman berikut:
+1. **Panel Admin:** [http://127.0.0.1:8000/admin](http://127.0.0.1:8000/admin) (Untuk mengelola menu, kategori, layout meja, dan rekap data).
+2. **Konsol Resepsionis:** [http://127.0.0.1:8000/receptionist](http://127.0.0.1:8000/receptionist) (Untuk pengecekan kedatangan, check-in, dan walk-in tamu).
 
 ---
 
