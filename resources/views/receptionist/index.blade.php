@@ -9,7 +9,7 @@
                 <p class="text-sm text-slate-500">Cek daftar reservasi, konfirmasi pemesanan, atau check-in tamu hari ini.</p>
             </div>
             <div>
-                <a href="{{ route('reservations.index') }}" target="_blank" class="inline-flex items-center gap-2 rounded-md bg-amber-400 px-4 py-2.5 text-sm font-bold text-slate-950 shadow-sm transition hover:bg-amber-300">
+                <a href="{{ route('admin.reservations.create') }}" class="inline-flex items-center gap-2 rounded-md bg-amber-400 px-4 py-2.5 text-sm font-bold text-slate-950 shadow-sm transition hover:bg-amber-300">
                     <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
                     Reservasi Baru (Walk-in / Telepon)
                 </a>
