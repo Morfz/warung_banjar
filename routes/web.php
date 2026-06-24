@@ -14,8 +14,17 @@ use App\Http\Controllers\Frontend\AboutController as FrontendAboutController;
 use App\Http\Controllers\Frontend\ContactController as FrontendContactController;
 use App\Http\Controllers\Frontend\BlogController as FrontendBlogController;
 use App\Http\Controllers\ReceptionistController;
+use App\Models\MediaUpload;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+
+Route::get('/media/{mediaUpload}', function (MediaUpload $mediaUpload) {
+    return response($mediaUpload->bytes(), 200, [
+        'Cache-Control' => 'public, max-age=31536000',
+        'Content-Length' => (string) $mediaUpload->size,
+        'Content-Type' => $mediaUpload->mime_type,
+    ]);
+})->name('media.show');
 
 Route::get('/storage/{path}', function (string $path) {
     $basePath = storage_path('app/public');
@@ -44,7 +53,7 @@ Route::get('/health', function () {
     }
 
     $tables = [];
-    foreach (['categories', 'menus', 'category_menu', 'tables', 'reservations', 'users'] as $table) {
+    foreach (['categories', 'menus', 'category_menu', 'tables', 'reservations', 'users', 'media_uploads'] as $table) {
         try {
             $tables[$table] = Schema::hasTable($table) ? DB::table($table)->count() : 'missing';
         } catch (Throwable $exception) {

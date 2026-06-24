@@ -7,7 +7,7 @@ use App\Http\Requests\MenuStoreRequest;
 use App\Http\Requests\MenuUpdateRequest;
 use App\Models\Menu;
 use App\Models\Category;
-use Illuminate\Support\Facades\Storage;
+use App\Support\ImageUploadStore;
 
 class MenuController extends Controller
 {
@@ -34,10 +34,10 @@ class MenuController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(MenuStoreRequest $request)
+    public function store(MenuStoreRequest $request, ImageUploadStore $images)
     {
         $validated = $request->validated();
-        $validated['image'] = $request->file('image')->store('public/menus');
+        $validated['image'] = $images->store($request->file('image'));
 
         $menu = Menu::create($validated);
         $menu->categories()->sync($validated['categories'] ?? []);
@@ -66,13 +66,13 @@ class MenuController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(MenuUpdateRequest $request, Menu $menu)
+    public function update(MenuUpdateRequest $request, Menu $menu, ImageUploadStore $images)
     {
         $validated = $request->validated();
 
         if ($request->hasFile('image')) {
-            Storage::delete($menu->image);
-            $validated['image'] = $request->file('image')->store('public/menus');
+            $images->delete($menu->image);
+            $validated['image'] = $images->store($request->file('image'));
         }
 
         $menu->update($validated);
@@ -84,9 +84,9 @@ class MenuController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Menu $menu)
+    public function destroy(Menu $menu, ImageUploadStore $images)
     {
-        Storage::delete($menu->image);
+        $images->delete($menu->image);
         $menu->categories()->detach();
         $menu->delete();
 

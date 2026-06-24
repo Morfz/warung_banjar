@@ -23,6 +23,10 @@ class Category extends Model
 
     public function getImageUrlAttribute(): string
     {
+        if ($this->image && str_starts_with($this->image, 'media:')) {
+            return route('media.show', (int) str($this->image)->after('media:')->toString());
+        }
+
         if ($this->image && preg_match('/^https?:\/\//', $this->image)) {
             return $this->image;
         }

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryStoreRequest;
 use App\Http\Requests\CategoryUpdateRequest;
 use App\Models\Category;
-use Illuminate\Support\Facades\Storage;
+use App\Support\ImageUploadStore;
 
 class CategoryController extends Controller
 {
@@ -31,10 +31,10 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CategoryStoreRequest $request)
+    public function store(CategoryStoreRequest $request, ImageUploadStore $images)
     {
         $validated = $request->validated();
-        $validated['image'] = $request->file('image')->store('public/categories');
+        $validated['image'] = $images->store($request->file('image'));
 
         Category::create($validated);
 
@@ -60,13 +60,13 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(CategoryUpdateRequest $request, Category $category)
+    public function update(CategoryUpdateRequest $request, Category $category, ImageUploadStore $images)
     {
         $validated = $request->validated();
 
         if ($request->hasFile('image')) {
-            Storage::delete($category->image);
-            $validated['image'] = $request->file('image')->store('public/categories');
+            $images->delete($category->image);
+            $validated['image'] = $images->store($request->file('image'));
         }
 
         $category->update($validated);
@@ -77,9 +77,9 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy(Category $category, ImageUploadStore $images)
     {
-        Storage::delete($category->image);
+        $images->delete($category->image);
         $category->menus()->detach();
         $category->delete();
 
