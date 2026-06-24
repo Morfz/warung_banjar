@@ -15,8 +15,20 @@ use App\Http\Controllers\Frontend\ContactController as FrontendContactController
 use App\Http\Controllers\Frontend\BlogController as FrontendBlogController;
 use App\Http\Controllers\ReceptionistController;
 use App\Models\MediaUpload;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+
+Route::get('/maintenance/migrate/{token}', function (string $token) {
+    abort_unless(hash_equals('warung-banjar-migrate-media-2026', $token), 404);
+
+    Artisan::call('migrate', ['--force' => true]);
+
+    return response()->json([
+        'status' => 'ok',
+        'output' => Artisan::output(),
+    ]);
+});
 
 Route::get('/media/{mediaUpload}', function (MediaUpload $mediaUpload) {
     return response($mediaUpload->bytes(), 200, [
