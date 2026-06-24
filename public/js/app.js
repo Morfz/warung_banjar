@@ -118,24 +118,16 @@ if (document.readyState === 'loading') {
 const nav = document.querySelector('nav');
 const backTop = document.querySelector('.back-top');
 
-let lastScrollPos = 0;
-
-const hideNav = function () {
-    if (!nav) return;
-
-    lastScrollPos < scrollY ? nav.classList.add('hide') : nav.classList.remove('hide');
-    lastScrollPos = scrollY;
-}
-
 addEventListener('scroll', function () {
     if (!nav || !backTop) return;
 
     if (window.scrollY >= 200) {
         nav.classList.add('scrolled');
+        nav.classList.remove('hide');
         backTop.classList.add('scrolled');
-        hideNav();
     } else {
         nav.classList.remove('scrolled');
+        nav.classList.remove('hide');
         backTop.classList.remove('scrolled');
     }
 });
