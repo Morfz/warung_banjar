@@ -17,6 +17,12 @@
     --black-alpha-15: #00000026;
 }
 
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
 ::-webkit-scrollbar { width: 5px; }
 
 ::-webkit-scrollbar-track { background-color: transparent; }
@@ -72,6 +78,7 @@ button {
 
 html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
 }
 
 body {
@@ -81,11 +88,11 @@ body {
     font-family: 'DM Sans';
     font-weight: 400;
     background: var(--smoky-black-2);
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 body.loaded {
-    overflow: visible;
+    overflow-y: visible;
 }
 
 .primary-screen {

@@ -20,7 +20,7 @@
         <link rel="shortcut icon" href="{{ asset ('img/favicon.svg') }}" type="image/svg+xml">
 
         <!-- Styles -->
-        <link rel="stylesheet" href="{{ asset ('css/styles.css') }}">
+        <link rel="stylesheet" href="{{ asset ('css/styles.css') }}?v=4">
         <link rel="stylesheet" href="{{ asset ('css/header.css') }}">
         <link rel="stylesheet" href="{{ asset ('css/nav.css') }}?v=2">
         <link rel="stylesheet" href="{{ asset ('css/services.css') }}">
