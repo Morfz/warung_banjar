@@ -14,21 +14,10 @@ use App\Http\Controllers\Frontend\AboutController as FrontendAboutController;
 use App\Http\Controllers\Frontend\ContactController as FrontendContactController;
 use App\Http\Controllers\Frontend\BlogController as FrontendBlogController;
 use App\Http\Controllers\ReceptionistController;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 Route::get('/health', function () {
-    $setupOutput = null;
-
-    if (request('setup') === 'warung-banjar-setup-2026') {
-        Artisan::call('migrate', ['--force' => true]);
-        $setupOutput = Artisan::output();
-
-        Artisan::call('db:seed', ['--force' => true]);
-        $setupOutput .= Artisan::output();
-    }
-
     try {
         DB::connection()->getPdo();
         $database = 'ok';
@@ -51,7 +40,6 @@ Route::get('/health', function () {
         'env' => app()->environment(),
         'database' => $database,
         'tables' => $tables,
-        'setup' => $setupOutput,
     ]);
 });
 
@@ -92,18 +80,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/receptionist/{reservation}/check-in', [ReceptionistController::class, 'checkIn'])->name('receptionist.check-in');
     Route::post('/receptionist/{reservation}/confirm', [ReceptionistController::class, 'confirm'])->name('receptionist.confirm');
     Route::post('/receptionist/{reservation}/cancel', [ReceptionistController::class, 'cancel'])->name('receptionist.cancel');
-});
-
-Route::get('/run-migration', function () {
-    try {
-        \Illuminate\Support\Facades\Artisan::call('migrate:fresh', [
-            '--seed' => true,
-            '--force' => true,
-        ]);
-        return "Database migrated and seeded successfully!";
-    } catch (\Exception $e) {
-        return "Error: " . $e->getMessage();
-    }
 });
 
 require __DIR__.'/auth.php';
