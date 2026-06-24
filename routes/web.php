@@ -15,6 +15,12 @@ use App\Http\Controllers\Frontend\ContactController as FrontendContactController
 use App\Http\Controllers\Frontend\BlogController as FrontendBlogController;
 use App\Http\Controllers\ReceptionistController;
 
+Route::get('/health', fn () => response()->json([
+    'status' => 'ok',
+    'app' => config('app.name'),
+    'env' => app()->environment(),
+]));
+
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 Route::get('/menus', [FrontendMenuController::class, 'index'])->name('menus.index');
 Route::get('/about', [FrontendAboutController::class, 'index'])->name('about.index');
