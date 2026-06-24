@@ -15,6 +15,7 @@ use App\Http\Controllers\Frontend\ContactController as FrontendContactController
 use App\Http\Controllers\Frontend\BlogController as FrontendBlogController;
 use App\Http\Controllers\ReceptionistController;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 Route::get('/health', function () {
     try {
@@ -24,11 +25,21 @@ Route::get('/health', function () {
         $database = $exception->getMessage();
     }
 
+    $tables = [];
+    foreach (['categories', 'menus', 'category_menu', 'tables', 'reservations', 'users'] as $table) {
+        try {
+            $tables[$table] = Schema::hasTable($table) ? DB::table($table)->count() : 'missing';
+        } catch (Throwable $exception) {
+            $tables[$table] = $exception->getMessage();
+        }
+    }
+
     return response()->json([
         'status' => 'ok',
         'app' => config('app.name'),
         'env' => app()->environment(),
         'database' => $database,
+        'tables' => $tables,
     ]);
 });
 
