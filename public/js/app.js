@@ -9,6 +9,8 @@ let currentSlidePos = 0;
 let lastActiveSliderItem = heroSliderItems[0];
 
 const updateSlider = function () {
+    if (!heroSliderItems.length) return;
+
     lastActiveSliderItem.classList.remove("slider-item--active");
     heroSliderItems[currentSlidePos].classList.add("slider-item--active");
     lastActiveSliderItem = heroSliderItems[currentSlidePos];
@@ -24,7 +26,7 @@ const slideNext = function () {
     updateSlider();
 }
 
-heroSliderNextBtn.addEventListener("click", slideNext);
+heroSliderNextBtn?.addEventListener("click", slideNext);
 
 const slidePrev = function () {
     if (currentSlidePos <= 0) {
@@ -36,7 +38,7 @@ const slidePrev = function () {
     updateSlider();
 }
 
-heroSliderPrevBtn.addEventListener("click", slidePrev);
+heroSliderPrevBtn?.addEventListener("click", slidePrev);
 
 
 /* Autoslide */
@@ -50,7 +52,7 @@ const autoSlide = function () {
 
 const addEventOnElements = function (elements, eventType, callback) {
     for (let i = 0, len = elements.length; i < len; i++) {
-        elements[i].addEventListener(eventType, callback);
+        elements[i]?.addEventListener(eventType, callback);
     }
 }
 
@@ -71,17 +73,17 @@ const asideClose = document.querySelector('.aside-close');
 const asideOpen = document.querySelector('.aside-open');
 const navItems = document.querySelector('aside .nav__items');
 
-asideOpen.addEventListener('click', () => {
+asideOpen?.addEventListener('click', () => {
     aside.classList.add('aside--show');
     asideOverlay.classList.add('aside--show');
 })
 
-asideClose.addEventListener('click', () => {
+asideClose?.addEventListener('click', () => {
     aside.classList.remove('aside--show');
     asideOverlay.classList.remove('aside--show');
 })
 
-navItems.addEventListener('click', (e) => {
+navItems?.addEventListener('click', (e) => {
     if (e.target.matches('a')) {
         aside.classList.remove('aside--show');
         asideOverlay.classList.remove('aside--show');
@@ -93,18 +95,21 @@ navItems.addEventListener('click', (e) => {
 */
 const preload = document.querySelector('.preload');
 
-addEventListener('load', () => {
-    setTimeout(() => {
-        preload.classList.add('loaded');
-        document.body.classList.add('loaded');
-        // scroll(0, 0);
-    }, 100)
+const startPublicUi = () => {
+    preload?.classList.add('loaded');
+    document.body.classList.add('loaded');
 
-    setTimeout(() => {
+    if (heroSliderItems.length) {
         heroSliderItems[0].classList.add('slider-item--active');
         autoSlide();
-    }, 200)
-})
+    }
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startPublicUi, { once: true });
+} else {
+    startPublicUi();
+}
 
 
 /*
@@ -116,11 +121,15 @@ const backTop = document.querySelector('.back-top');
 let lastScrollPos = 0;
 
 const hideNav = function () {
+    if (!nav) return;
+
     lastScrollPos < scrollY ? nav.classList.add('hide') : nav.classList.remove('hide');
     lastScrollPos = scrollY;
 }
 
 addEventListener('scroll', function () {
+    if (!nav || !backTop) return;
+
     if (window.scrollY >= 200) {
         nav.classList.add('scrolled');
         backTop.classList.add('scrolled');
@@ -131,7 +140,7 @@ addEventListener('scroll', function () {
     }
 });
 
-backTop.addEventListener('click', () => {
+backTop?.addEventListener('click', () => {
     scroll(0,0)
 })
 
@@ -211,7 +220,9 @@ backTop.addEventListener('click', () => {
 */
 const inputDate = document.getElementById('reservation-date');
 
-addEventListener('load', () => {
+document.addEventListener('DOMContentLoaded', () => {
+    if (!inputDate) return;
+
     let now = new Date();
     let currentTime = now.toISOString().substring(0, 10);
     inputDate.value = currentTime;

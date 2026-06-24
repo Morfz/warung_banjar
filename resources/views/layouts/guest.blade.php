@@ -14,9 +14,7 @@
         <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Forum&display=swap" rel="stylesheet">
 
         <!-- Images -->
-        <link rel="preload" as="image" href="{{ asset('img/hero-slider-1.jpg') }}">
-        <link rel="preload" as="image" href="{{ asset('img/hero-slider-2.jpg') }}">
-        <link rel="preload" as="image" href="{{ asset('img/hero-slider-3.jpg') }}">
+        <link rel="preload" as="image" href="{{ asset('img/hero-slider-1.jpg') }}" fetchpriority="high">
         <link rel="shortcut icon" href="{{ asset ('img/favicon.svg') }}" type="image/svg+xml">
 
         <!-- Styles -->
@@ -40,7 +38,7 @@
         <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/id.js"></script>
 
         <!-- JS -->
-        <script defer src="{{ asset ('js/app.js') }}"></script>
+        <script defer src="{{ asset ('js/app.js') }}?v=6"></script>
 
     </head>
     <body style="height: 100vh; overflow-y: scroll;">
@@ -157,7 +155,7 @@
 
 
                     <div class="slider-item">
-                        <div class="slider-bg"><img src="/img/hero-slider-1.jpg" alt="Hidangan khas Warung Banjar"></div>
+                        <div class="slider-bg"><img src="/img/hero-slider-1.jpg" alt="Hidangan khas Warung Banjar" fetchpriority="high"></div>
                         <h2 reveal class="subtitle" style="--delay-item: 0">Tradisional & Higienis</h2>
                         <h1 reveal class="title" style="--delay-item: 1">Untuk cinta pada makanan lezat</h1>
                         <p reveal class="paragraph" style="--delay-item: 2">Datanglah bersama keluarga dan rasakan kegembiraan dari makanan yang menggugah selera</p>
@@ -167,7 +165,7 @@
                     </div>
 
                     <div class="slider-item">
-                        <div class="slider-bg"><img src="/img/hero-slider-2.jpg" alt="Suasana makan keluarga"></div>
+                        <div class="slider-bg"><img src="/img/hero-slider-2.jpg" alt="Suasana makan keluarga" loading="lazy" fetchpriority="low"></div>
                         <h2 reveal class="subtitle" style="--delay-item: 0">Pengalaman yang Menyenangkan</h2>
                         <h1 reveal class="title" style="--delay-item: 1">Rasa yang Terinspirasi oleh Musim</h1>
                         <p reveal class="paragraph" style="--delay-item: 2">Datanglah bersama keluarga dan rasakan kegembiraan dari makanan yang menggugah selera</p>
@@ -177,7 +175,7 @@
                     </div>
 
                     <div class="slider-item">
-                        <div class="slider-bg"><img src="/img/hero-slider-3.jpg" alt="Menu favorit Warung Banjar"></div>
+                        <div class="slider-bg"><img src="/img/hero-slider-3.jpg" alt="Menu favorit Warung Banjar" loading="lazy" fetchpriority="low"></div>
                         <h2 reveal class="subtitle" style="--delay-item: 0">Menakjubkan & Lezat</h2>
                         <h1 reveal class="title" style="--delay-item: 1">Dimana setiap rasa bercerita</h1>
                         <p reveal class="paragraph" style="--delay-item: 2">Datanglah bersama keluarga dan rasakan kegembiraan dari makanan yang menggugah selera</p>
