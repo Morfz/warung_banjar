@@ -248,11 +248,13 @@
             background: transparent !important;
             border-color: transparent !important;
         }
-        .flatpickr-input.input-field {
+        .flatpickr-input,
+        .flatpickr-input.input-field,
+        .inputs span input.flatpickr-input {
             color: var(--white) !important;
             background: var(--eerie-black-2) !important;
             cursor: pointer;
-            padding-left: 35px !important;
+            padding-left: 50px !important;
         }
         .flatpickr-input.input-field::placeholder {
             color: rgba(255, 255, 255, 0.4) !important;
@@ -284,6 +286,7 @@
             }
 
             const fp = flatpickr(datePicker, {
+                locale: "id",
                 minDate: datePicker.getAttribute('min'),
                 maxDate: datePicker.getAttribute('max'),
                 dateFormat: "Y-m-d",
