@@ -31,7 +31,7 @@
                     </span>
                     <span>
                         <ion-icon name="calendar-outline"></ion-icon>
-                        <input class="input-field" type="date" id="date_picker" min="{{ $min_date->format('Y-m-d') }}" max="{{ $max_date->format('Y-m-d') }}" required style="padding-left: 35px;">
+                        <input class="input-field" type="date" id="date_picker" placeholder="Pilih Tanggal" min="{{ $min_date->format('Y-m-d') }}" max="{{ $max_date->format('Y-m-d') }}" required style="padding-left: 35px;">
                     </span>
                     <span>
                         <ion-icon name="time-outline"></ion-icon>
@@ -170,6 +170,11 @@
         .flatpickr-calendar.arrowDown::before {
             border-top-color: var(--gold-crayola) !important;
         }
+        .flatpickr-months {
+            background: var(--eerie-black-2) !important;
+            border-bottom: 1px solid var(--white-alpha-10);
+            padding: 8px 0 !important;
+        }
         .flatpickr-months .flatpickr-month,
         .flatpickr-months .flatpickr-prev-month, 
         .flatpickr-months .flatpickr-next-month {
@@ -180,12 +185,30 @@
         .flatpickr-months .flatpickr-next-month:hover svg {
             fill: var(--gold-crayola) !important;
         }
+        .flatpickr-current-month {
+            font-family: inherit !important;
+            color: var(--white) !important;
+            font-size: 1.1rem !important;
+        }
+        .flatpickr-current-month .flatpickr-monthDropdown-months {
+            background: var(--eerie-black-2) !important;
+            color: var(--white) !important;
+            font-weight: 700 !important;
+            border: none !important;
+            outline: none !important;
+            cursor: pointer;
+        }
+        .flatpickr-current-month input.numInput.cur-year {
+            color: var(--white) !important;
+            font-weight: 700 !important;
+        }
         .flatpickr-weekday {
-            color: var(--quick-silver) !important;
+            color: var(--gold-crayola) !important;
             font-weight: 600 !important;
         }
         .flatpickr-day {
             color: var(--white) !important;
+            border-radius: 4px !important;
         }
         .flatpickr-day:hover,
         .flatpickr-day.prevMonthDay:hover,
@@ -204,6 +227,10 @@
         }
         .flatpickr-day.today {
             border-color: var(--gold-crayola) !important;
+            color: var(--gold-crayola) !important;
+        }
+        .flatpickr-day.today:hover {
+            color: var(--eerie-black-1) !important;
         }
         .flatpickr-day.flatpickr-disabled,
         .flatpickr-day.flatpickr-disabled:hover,
@@ -212,6 +239,14 @@
             color: var(--davys-grey) !important;
             background: transparent !important;
             border-color: transparent !important;
+        }
+        .flatpickr-input.input-field {
+            color: var(--white) !important;
+            background: var(--eerie-black-2) !important;
+            cursor: pointer;
+        }
+        .flatpickr-input.input-field::placeholder {
+            color: rgba(255, 255, 255, 0.4) !important;
         }
     </style>
 
@@ -246,6 +281,7 @@
                 altInput: true,
                 altFormat: "d F Y",
                 disableMobile: "true",
+                placeholder: "Pilih Tanggal",
                 onChange: function(selectedDates, dateStr) {
                     datePicker.value = dateStr;
                     syncDateTime();
