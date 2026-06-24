@@ -59,6 +59,64 @@ class RestaurantDemoSeeder extends Seeder
                     ->all(),
             );
         }
+
+        // Seed dummy reservations for today
+        $table1 = \App\Models\Table::where('name', 'Meja 1')->first();
+        $table2 = \App\Models\Table::where('name', 'Meja 2')->first();
+        $table12 = \App\Models\Table::where('name', 'Meja 12')->first();
+        $table17 = \App\Models\Table::where('name', 'Meja 17')->first();
+
+        if ($table1 && $table2 && $table12 && $table17) {
+            $today = \Carbon\Carbon::today()->toDateString();
+            
+            \App\Models\Reservation::updateOrCreate(
+                ['email' => 'budi@example.com'],
+                [
+                    'name' => 'Budi Santoso',
+                    'phone' => '08123456789',
+                    'date' => "{$today} 12:00:00",
+                    'guests' => 2,
+                    'status' => \App\Enums\ReservationStatus::Pending->value,
+                    'table_id' => $table1->id,
+                ]
+            );
+
+            \App\Models\Reservation::updateOrCreate(
+                ['email' => 'siti@example.com'],
+                [
+                    'name' => 'Siti Rahma',
+                    'phone' => '08987654321',
+                    'date' => "{$today} 13:30:00",
+                    'guests' => 4,
+                    'status' => \App\Enums\ReservationStatus::Confirmed->value,
+                    'table_id' => $table2->id,
+                ]
+            );
+
+            \App\Models\Reservation::updateOrCreate(
+                ['email' => 'joko@example.com'],
+                [
+                    'name' => 'Joko Widodo',
+                    'phone' => '08111111111',
+                    'date' => "{$today} 19:00:00",
+                    'guests' => 6,
+                    'status' => \App\Enums\ReservationStatus::Completed->value,
+                    'table_id' => $table12->id,
+                ]
+            );
+
+            \App\Models\Reservation::updateOrCreate(
+                ['email' => 'ani@example.com'],
+                [
+                    'name' => 'Ani Yudhoyono',
+                    'phone' => '08222222222',
+                    'date' => "{$today} 20:30:00",
+                    'guests' => 8,
+                    'status' => \App\Enums\ReservationStatus::Cancelled->value,
+                    'table_id' => $table17->id,
+                ]
+            );
+        }
     }
 
     private function menus(): array
