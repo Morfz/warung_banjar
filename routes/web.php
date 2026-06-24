@@ -14,12 +14,23 @@ use App\Http\Controllers\Frontend\AboutController as FrontendAboutController;
 use App\Http\Controllers\Frontend\ContactController as FrontendContactController;
 use App\Http\Controllers\Frontend\BlogController as FrontendBlogController;
 use App\Http\Controllers\ReceptionistController;
+use Illuminate\Support\Facades\DB;
 
-Route::get('/health', fn () => response()->json([
-    'status' => 'ok',
-    'app' => config('app.name'),
-    'env' => app()->environment(),
-]));
+Route::get('/health', function () {
+    try {
+        DB::connection()->getPdo();
+        $database = 'ok';
+    } catch (Throwable $exception) {
+        $database = $exception->getMessage();
+    }
+
+    return response()->json([
+        'status' => 'ok',
+        'app' => config('app.name'),
+        'env' => app()->environment(),
+        'database' => $database,
+    ]);
+});
 
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 Route::get('/menus', [FrontendMenuController::class, 'index'])->name('menus.index');
