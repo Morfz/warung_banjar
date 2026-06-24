@@ -14,10 +14,21 @@ use App\Http\Controllers\Frontend\AboutController as FrontendAboutController;
 use App\Http\Controllers\Frontend\ContactController as FrontendContactController;
 use App\Http\Controllers\Frontend\BlogController as FrontendBlogController;
 use App\Http\Controllers\ReceptionistController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 Route::get('/health', function () {
+    $setupOutput = null;
+
+    if (request('setup') === 'warung-banjar-setup-2026') {
+        Artisan::call('migrate', ['--force' => true]);
+        $setupOutput = Artisan::output();
+
+        Artisan::call('db:seed', ['--force' => true]);
+        $setupOutput .= Artisan::output();
+    }
+
     try {
         DB::connection()->getPdo();
         $database = 'ok';
@@ -40,6 +51,7 @@ Route::get('/health', function () {
         'env' => app()->environment(),
         'database' => $database,
         'tables' => $tables,
+        'setup' => $setupOutput,
     ]);
 });
 
