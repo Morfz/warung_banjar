@@ -38,10 +38,10 @@
         <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/id.js"></script>
 
         <!-- JS -->
-        <script defer src="{{ asset ('js/app.js') }}?v=7"></script>
+        <script defer src="{{ asset ('js/app.js') }}?v=8"></script>
 
     </head>
-    <body style="height: 100vh; overflow-y: scroll;">
+    <body>
         <div class="container" id="home" >
             <!-- 
                 PRIMARY SCREEN

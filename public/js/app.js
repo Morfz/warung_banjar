@@ -118,10 +118,12 @@ if (document.readyState === 'loading') {
 const nav = document.querySelector('nav');
 const backTop = document.querySelector('.back-top');
 
-addEventListener('scroll', function () {
+const currentScrollTop = () => window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+
+const updateNavOnScroll = function () {
     if (!nav || !backTop) return;
 
-    if (window.scrollY >= 200) {
+    if (currentScrollTop() >= 200) {
         nav.classList.add('scrolled');
         nav.classList.remove('hide');
         backTop.classList.add('scrolled');
@@ -130,7 +132,11 @@ addEventListener('scroll', function () {
         nav.classList.remove('hide');
         backTop.classList.remove('scrolled');
     }
-});
+};
+
+addEventListener('scroll', updateNavOnScroll, { passive: true });
+document.body?.addEventListener('scroll', updateNavOnScroll, { passive: true });
+updateNavOnScroll();
 
 backTop?.addEventListener('click', () => {
     scroll(0,0)
