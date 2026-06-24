@@ -32,6 +32,11 @@
         <link rel="stylesheet" href="{{ asset ('css/strength.css') }}">
         <link rel="stylesheet" href="{{ asset ('css/footer.css') }}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+        
+        <!-- Flatpickr -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
         <!-- JS -->
         <script defer src="{{ asset ('js/app.js') }}"></script>

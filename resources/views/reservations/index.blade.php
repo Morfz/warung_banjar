@@ -149,6 +149,70 @@
             min-width: max-content !important;
             flex-grow: 0 !important;
         }
+
+        /* Custom Flatpickr Premium Theme Styling */
+        .flatpickr-calendar {
+            background: var(--eerie-black-2) !important;
+            border: 1px solid var(--gold-crayola) !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+            color: var(--white) !important;
+            font-family: inherit !important;
+        }
+        .flatpickr-calendar.arrowUp::after {
+            border-bottom-color: var(--eerie-black-2) !important;
+        }
+        .flatpickr-calendar.arrowUp::before {
+            border-bottom-color: var(--gold-crayola) !important;
+        }
+        .flatpickr-calendar.arrowDown::after {
+            border-top-color: var(--eerie-black-2) !important;
+        }
+        .flatpickr-calendar.arrowDown::before {
+            border-top-color: var(--gold-crayola) !important;
+        }
+        .flatpickr-months .flatpickr-month,
+        .flatpickr-months .flatpickr-prev-month, 
+        .flatpickr-months .flatpickr-next-month {
+            color: var(--white) !important;
+            fill: var(--white) !important;
+        }
+        .flatpickr-months .flatpickr-prev-month:hover svg, 
+        .flatpickr-months .flatpickr-next-month:hover svg {
+            fill: var(--gold-crayola) !important;
+        }
+        .flatpickr-weekday {
+            color: var(--quick-silver) !important;
+            font-weight: 600 !important;
+        }
+        .flatpickr-day {
+            color: var(--white) !important;
+        }
+        .flatpickr-day:hover,
+        .flatpickr-day.prevMonthDay:hover,
+        .flatpickr-day.nextMonthDay:hover,
+        .flatpickr-day.today:hover {
+            background: var(--gold-crayola) !important;
+            border-color: var(--gold-crayola) !important;
+            color: var(--eerie-black-1) !important;
+        }
+        .flatpickr-day.selected,
+        .flatpickr-day.selected:hover {
+            background: var(--gold-crayola) !important;
+            border-color: var(--gold-crayola) !important;
+            color: var(--eerie-black-1) !important;
+            font-weight: bold !important;
+        }
+        .flatpickr-day.today {
+            border-color: var(--gold-crayola) !important;
+        }
+        .flatpickr-day.flatpickr-disabled,
+        .flatpickr-day.flatpickr-disabled:hover,
+        .flatpickr-day.prevMonthDay,
+        .flatpickr-day.nextMonthDay {
+            color: var(--davys-grey) !important;
+            background: transparent !important;
+            border-color: transparent !important;
+        }
     </style>
 
     <script>
@@ -175,16 +239,20 @@
                 }
             }
 
-            datePicker?.addEventListener('change', syncDateTime);
-            timePicker?.addEventListener('change', syncDateTime);
-
-            datePicker?.addEventListener('click', () => {
-                try {
-                    datePicker.showPicker();
-                } catch (e) {
-                    console.error(e);
+            const fp = flatpickr(datePicker, {
+                minDate: datePicker.getAttribute('min'),
+                maxDate: datePicker.getAttribute('max'),
+                dateFormat: "Y-m-d",
+                altInput: true,
+                altFormat: "d F Y",
+                disableMobile: "true",
+                onChange: function(selectedDates, dateStr) {
+                    datePicker.value = dateStr;
+                    syncDateTime();
                 }
             });
+
+            timePicker?.addEventListener('change', syncDateTime);
 
             const guests = document.getElementById('guests');
             const choices = [...document.querySelectorAll('.table-choice')];
