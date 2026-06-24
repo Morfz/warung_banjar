@@ -54,4 +54,16 @@ Route::middleware('auth')->group(function () {
     Route::post('/receptionist/{reservation}/cancel', [ReceptionistController::class, 'cancel'])->name('receptionist.cancel');
 });
 
+Route::get('/run-migration', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate:fresh', [
+            '--seed' => true,
+            '--force' => true,
+        ]);
+        return "Database migrated and seeded successfully!";
+    } catch (\Exception $e) {
+        return "Error: " . $e->getMessage();
+    }
+});
+
 require __DIR__.'/auth.php';
