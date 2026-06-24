@@ -1,56 +1,60 @@
 # Warung Banjar
 
-Aplikasi reservasi dan katalog menu restoran berbasis Laravel 12, Blade, Tailwind, dan Vite 8.
+Aplikasi reservasi meja dan katalog menu restoran berbasis Laravel 12, Blade, Tailwind, dan Vite 8.
 
-## Fitur utama
+## Fitur Utama
 
-- Halaman publik untuk beranda, menu, tentang, kontak, dan reservasi meja.
-- Admin panel untuk mengelola kategori, menu, meja, dan reservasi.
-- Validasi reservasi agar meja tidak bentrok dalam slot satu jam.
-- Seeder admin default untuk akses awal.
+- **Halaman Publik**:
+  - Beranda, katalog menu makanan/minuman, tentang kami, kontak, dan reservasi meja secara langsung.
+- **Sistem Reservasi Meja Interaktif**:
+  - Denah lantai restoran (Restaurant Floor Plan Map) interaktif untuk memilih meja yang diinginkan secara visual.
+  - State meja real-time: Meja yang sudah dibooking dalam slot waktu tertentu akan otomatis terarsir redup (disabled).
+- **Aturan Reservasi Pintar**:
+  - Slot reservasi menggunakan interval per 30 menit (contoh: 10:30, 11:00, 11:30, dst.).
+  - Durasi pemakaian meja minimum 1 jam. Sistem secara otomatis menonaktifkan meja yang bentrok dengan jadwal reservasi lain yang tumpang tindih.
+- **Admin Panel**:
+  - Pengelolaan Menu & Kategori makanan/minuman (beserta upload foto).
+  - Pengelolaan Reservasi pelanggan.
+  - Pengelolaan Meja & **Layout Desainer Meja** secara visual (bisa mengatur posisi X/Y, kapasitas, orientasi bentuk meja vertikal/horizontal langsung dari admin).
+- **Seeder Admin Default** untuk akses cepat di lingkungan pengembangan.
 
-## Setup lokal
+## Setup Lokal
 
 Kebutuhan minimum:
-
 - PHP 8.2 atau lebih baru
 - Composer
 - Node.js 20.19 atau lebih baru
-- MySQL/MariaDB atau SQLite untuk pengembangan lokal
+- MySQL/MariaDB
 
-1. Install dependency PHP dan JavaScript.
+### Langkah Instalasi:
 
-```bash
-composer install
-npm install
-```
+1. **Install Dependensi PHP & JavaScript**:
+   ```bash
+   composer install
+   ```
 
-2. Salin env dan buat app key.
+2. **Salin Environment & Generate Key**:
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-```bash
-cp .env.example .env
-php artisan key:generate
-```
+3. **Konfigurasi Database & Jalankan Migrasi + Seeder**:
+   Atur koneksi database di file `.env`, lalu jalankan:
+   ```bash
+   php artisan migrate --seed
+   php artisan storage:link
+   ```
 
-3. Atur koneksi database di `.env`, lalu jalankan migration dan seeder.
+4. **Jalankan Server Lokal**:
+   ```bash
+   php artisan serve
+   ```
 
-```bash
-php artisan migrate --seed
-php artisan storage:link
-```
+### Akun Admin Default:
+- **Email:** `admin@gmail.com`
+- **Password:** `password`
 
-4. Jalankan server Laravel dan Vite.
+## Backup Data
+File `warung_banjar.sql` disediakan sebagai backup database lama. Namun, disarankan menggunakan perintah `--seed` saat migrasi awal agar data dummy meja restoran dan layout denah default (`RestaurantDemoSeeder`) langsung terbuat dengan benar secara otomatis.
 
-```bash
-php artisan serve
-npm run dev
-```
-
-Admin default:
-
-- Email: `admin@gmail.com`
-- Password: `password`
-
-## Data lama
-
-File `warung_banjar.sql` disimpan sebagai backup database lama. Untuk setup baru, disarankan memakai migration dan seeder terlebih dahulu. Jika ingin memakai data lama, import SQL tersebut ke database yang sudah dikonfigurasi di `.env`.
